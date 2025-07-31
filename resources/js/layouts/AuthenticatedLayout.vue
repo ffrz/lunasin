@@ -186,158 +186,44 @@ onMounted(() => {
               <q-item-label>Dashboard</q-item-label>
             </q-item-section>
           </q-item>
-
-          <!-- <q-item clickable v-ripple :active="$page.url.startsWith('/admin/reports')"
-            @click="router.get(route('admin.report.index'))">
-            <q-item-section avatar>
-              <q-icon name="docs" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Laporan</q-item-label>
-            </q-item-section>
-          </q-item> -->
-
-          <!-- <q-separator /> -->
-
-          <!-- <q-item clickable v-ripple :active="$page.url.startsWith('/admin/activities')"
-            @click="router.get(route('admin.activity.index'))">
-            <q-item-section avatar>
-              <q-icon name="event" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Kegiatan</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          -->
-          <!-- <q-item clickable v-ripple :active="$page.url.startsWith('/admin/closings')"
-            @click="router.get(route('admin.closing.index'))">
-            <q-item-section avatar>
-              <q-icon name="handshake" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Closing</q-item-label>
-            </q-item-section>
-          </q-item>
-          -->
-
-          <!-- <q-separator /> -->
-          <!-- <q-item v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN" clickable v-ripple
-            :active="$page.url.startsWith('/admin/farmers')" @click="router.get(route('admin.farmer.index'))">
-            <q-item-section avatar>
-              <q-icon name="agriculture" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Petani</q-item-label>
-            </q-item-section>
-          </q-item> -->
-          <q-separator />
-          <q-item
-            v-if="
-              [
-                $CONSTANTS.USER_ROLE_BS,
-                $CONSTANTS.USER_ROLE_ADMIN,
-                $CONSTANTS.USER_ROLE_AGRONOMIST,
-              ].includes($page.props.auth.user.role)
-            "
-            clickable
-            v-ripple
-            :active="$page.url.startsWith('/admin/activities')"
-            @click="router.get(route('admin.activity.index'))"
-          >
-            <q-item-section avatar>
-              <q-icon name="overview" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Kegiatan</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            v-ripple
-            :active="$page.url.startsWith('/admin/demo-plots')"
-            @click="router.get(route('admin.demo-plot.index'))"
-          >
-            <q-item-section avatar>
-              <q-icon name="assignment" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Demplot</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            v-ripple
-            :active="$page.url.startsWith('/admin/activity-targets')"
-            @click="router.get(route('admin.activity-target.index'))"
-          >
-            <q-item-section avatar>
-              <q-icon name="target" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Target Kegiatan</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            v-ripple
-            :active="$page.url.startsWith('/admin/customers')"
-            v-if="
-              check_role([
-                $CONSTANTS.USER_ROLE_ADMIN,
-                $CONSTANTS.USER_ROLE_AGRONOMIST,
-                $CONSTANTS.USER_ROLE_ASM,
-              ])
-            "
-            @click="router.get(route('admin.customer.index'))"
-          >
-            <q-item-section avatar>
-              <q-icon name="storefront" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Client</q-item-label>
-            </q-item-section>
-          </q-item>
           <q-separator />
           <q-item
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/products')"
-            @click="router.get(route('admin.product.index'))"
+            :active="$page.url.startsWith('/admin/transactions')"
+            @click="router.get(route('admin.transaction.index'))"
           >
             <q-item-section avatar>
-              <q-icon name="potted_plant" />
+              <q-icon name="sync_alt" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Varietas Tanaman</q-item-label>
+              <q-item-label>Transaksi</q-item-label>
             </q-item-section>
           </q-item>
           <q-item
-            v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN"
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/product-categories')"
-            @click="router.get(route('admin.product-category.index'))"
+            :active="$page.url.startsWith('/admin/transaction-categories')"
+            @click="router.get(route('admin.transaction-category.index'))"
           >
             <q-item-section avatar>
               <q-icon name="category" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Kategori Varietas</q-item-label>
+              <q-item-label>Kategori Transaksi</q-item-label>
             </q-item-section>
           </q-item>
           <q-item
-            v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN"
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/activity-types')"
-            @click="router.get(route('admin.activity-type.index'))"
+            :active="$page.url.startsWith('/admin/parties')"
+            @click="router.get(route('admin.party.index'))"
           >
             <q-item-section avatar>
-              <q-icon name="activity_zone" />
+              <q-icon name="partner_exchange" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Jenis Kegiatan (DGA)</q-item-label>
+              <q-item-label>Pihak-pihak</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -367,18 +253,6 @@ onMounted(() => {
               <q-item-label>Profil Saya</q-item-label>
             </q-item-section>
           </q-item>
-          <!-- <q-item v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN" clickable v-ripple
-            :active="$page.url.startsWith('/admin/settings/company-profile')"
-            @click="router.get(route('admin.company-profile.edit'))">
-            <q-item-section avatar>
-              <q-icon name="apartment" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Profil Perusahaan</q-item-label>
-            </q-item-section>
-          </q-item> -->
-
-          <q-separator />
 
           <q-item
             clickable
