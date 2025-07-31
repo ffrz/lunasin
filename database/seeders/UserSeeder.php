@@ -17,59 +17,13 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'id' => 1,
-                'name' => 'CHRISTIEN YUNIANTO',
-                'role' => User::Role_ASM,
-                'work_area' => null,
-                'parent_id' => null,
+                'name' => 'Admin',
+                'role' => User::Role_Admin,
             ],
             [
                 'id' => 2,
-                'name' => 'AGUS HERDIANTO',
-                'role' => User::Role_Agronomist,
-                'work_area' => null,
-                'parent_id' => 1,
-            ],
-            [
-                'id' => 3,
-                'name' => 'AGUS NURJANI',
-                'role' => User::Role_Agronomist,
-                'work_area' => null,
-                'parent_id' => 1,
-            ],
-            [
-                'id' => 4,
-                'name' => 'CHANDRA',
-                'role' => User::Role_Agronomist,
-                'work_area' => null,
-                'parent_id' => 1,
-            ],
-            [
-                'id' => 5,
-                'name' => 'FATKHROKMAN',
-                'role' => User::Role_BS,
-                'work_area' => 'CIREBON',
-                'parent_id' => 2,
-            ],
-            [
-                'id' => 6,
-                'name' => 'IING MUBAROK',
-                'role' => User::Role_BS,
-                'work_area' => 'KUNINGAN - MJL HL',
-                'parent_id' => 2,
-            ],
-            [
-                'id' => 7,
-                'name' => 'RIFKI FAISAL',
-                'role' => User::Role_BS,
-                'work_area' => 'INDRAMAYU - MJL LL',
-                'parent_id' => 2,
-            ],
-            [
-                'id' => 8,
-                'name' => 'LISTIANTO',
-                'role' => User::Role_BS,
-                'work_area' => 'SUBANG - PURWAKARTA',
-                'parent_id' => 2,
+                'name' => 'User',
+                'role' => User::Role_User,
             ],
         ];
 
@@ -80,19 +34,9 @@ class UserSeeder extends Seeder
             $user['name'] = ucwords(strtolower($user['name']));
             $user['username'] = $username;
             $user['password'] = $password;
-            $user['work_area'] = ucwords(strtolower($user['work_area']));
             $user['active'] = true;
         }
 
         DB::table('users')->insert($users);
-        DB::table('users')->insert([
-            [
-                'username' => 'admin',
-                'password' => $password,
-                'name' => 'Admin',
-                'active' => true,
-                'role' => User::Role_Admin,
-            ]
-        ]);
     }
 }

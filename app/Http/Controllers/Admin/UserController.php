@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         // tambahkan jumlah client yang ditangani oleh user ini
         return inertia('admin/user/Detail', [
-            'data' => User::with('parent')->findOrFail($id),
+            'data' => User::findOrFail($id),
         ]);
     }
 
@@ -35,7 +35,7 @@ class UserController extends Controller
         $filter = $request->get('filter', []);
 
         // tambahkan jumlah client yang ditangani oleh user ini
-        $q = User::with(['parent:id,username,name']);
+        $q = User::query();
         $q->orderBy($orderBy, $orderType);
 
         if (!empty($filter['role'] && $filter['role'] != 'all')) {
@@ -49,8 +49,7 @@ class UserController extends Controller
         if (!empty($filter['search'])) {
             $q->where(function ($query) use ($filter) {
                 $query->where('name', 'like', '%' . $filter['search'] . '%')
-                    ->orWhere('username', 'like', '%' . $filter['search'] . '%')
-                    ->orWhere('work_area', 'like', '%' . $filter['search'] . '%');
+                    ->orWhere('username', 'like', '%' . $filter['search'] . '%');
             });
         }
 
@@ -67,9 +66,7 @@ class UserController extends Controller
         $user->id = null;
         $user->created_at = null;
         return inertia('admin/user/Editor', [
-            'data' => $user,
-            'users' => User::where('role', '<>', User::Role_Admin)
-                ->where('role', '<>', User::Role_BS)->orderBy('name')->get()
+            'data' => $user
         ]);
     }
 
@@ -88,8 +85,6 @@ class UserController extends Controller
 
         return inertia('admin/user/Editor', [
             'data' => $user,
-            'users' => User::where('role', '<>', User::Role_Admin)
-                ->where('role', '<>', User::Role_BS)->orderBy('name')->get()
         ]);
     }
 
@@ -101,8 +96,6 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'password' => 'required|min:5|max:40',
             'role' => 'required',
-            'parent_id' => 'required|exists:users,id',
-            'work_area' => 'nullable|string|max:100',
         ];
 
         $user = null;

@@ -22,13 +22,9 @@
     window.CONFIG.APP_VERSION_STR = "{{ config('app.version_str', '1.0.0') }}";
     window.CONSTANTS = <?= json_encode([
           'USER_ROLES' => \App\Models\User::Roles,
-          'ACTIVITY_TYPE_TARGET_PERIODS' => \App\Models\ActivityType::TargetPeriods,
-          'DEMO_PLOT_PLANT_STATUSES' => \App\Models\DemoPlot::PlantStatuses,
       ]) ?>;
     window.CONSTANTS.USER_ROLE_ADMIN = "{{ \App\Models\User::Role_Admin }}";
-    window.CONSTANTS.USER_ROLE_ASM = "{{ \App\Models\User::Role_ASM }}";
-    window.CONSTANTS.USER_ROLE_AGRONOMIST = "{{ \App\Models\User::Role_Agronomist }}";
-    window.CONSTANTS.USER_ROLE_BS = "{{ \App\Models\User::Role_BS }}";
+    window.CONSTANTS.USER_ROLE_USER = "{{ \App\Models\User::Role_User }}";
     @if (!!env('APP_DEMO'))
       window.CONFIG.APP_DEMO = 1
     @endif

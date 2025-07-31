@@ -62,9 +62,13 @@ export function plantAge(plant_date, toDate) {
   return `${(toDate ? dayjs(toDate) : dayjs()).diff(dayjs(plant_date), 'day')}`;
 };
 
-export function create_options(data) {
+export function createOptions(data) {
   return Object.entries(data)
     .map(([key, value]) => ({ 'value': key, 'label': value }));
+}
+
+export function create_options(data) {
+  return createOptions(data);
 }
 
 export async function scrollToFirstErrorField(ref) {
