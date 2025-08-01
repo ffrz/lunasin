@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PartyController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\TransactionCategoryController;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Middleware\Auth;
@@ -51,15 +52,15 @@ Route::middleware([Auth::class])->group(function () {
         //     Route::get('export', [ProductController::class, 'export'])->name('admin.product.export');
         // });
 
-        // Route::prefix('product-categories')->group(function () {
-        //     Route::get('', [ProductCategoryController::class, 'index'])->name('admin.product-category.index');
-        //     Route::get('data', [ProductCategoryController::class, 'data'])->name('admin.product-category.data');
-        //     Route::get('add', [ProductCategoryController::class, 'editor'])->name('admin.product-category.add');
-        //     Route::get('duplicate/{id}', [ProductCategoryController::class, 'duplicate'])->name('admin.product-category.duplicate');
-        //     Route::get('edit/{id}', [ProductCategoryController::class, 'editor'])->name('admin.product-category.edit');
-        //     Route::post('save', [ProductCategoryController::class, 'save'])->name('admin.product-category.save');
-        //     Route::post('delete/{id}', [ProductCategoryController::class, 'delete'])->name('admin.product-category.delete');
-        // });
+        Route::prefix('transaction-categories')->group(function () {
+            Route::get('', [TransactionCategoryController::class, 'index'])->name('admin.transaction-category.index');
+            Route::get('data', [TransactionCategoryController::class, 'data'])->name('admin.transaction-category.data');
+            Route::get('add', [TransactionCategoryController::class, 'editor'])->name('admin.transaction-category.add');
+            Route::get('duplicate/{id}', [TransactionCategoryController::class, 'duplicate'])->name('admin.transaction-category.duplicate');
+            Route::get('edit/{id}', [TransactionCategoryController::class, 'editor'])->name('admin.transaction-category.edit');
+            Route::post('save', [TransactionCategoryController::class, 'save'])->name('admin.transaction-category.save');
+            Route::post('delete/{id}', [TransactionCategoryController::class, 'delete'])->name('admin.transaction-category.delete');
+        });
 
         Route::prefix('parties')->group(function () {
             Route::get('', [PartyController::class, 'index'])->name('admin.party.index');
