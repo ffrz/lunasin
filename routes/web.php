@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PartyController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\TransactionCategoryController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Middleware\Auth;
@@ -51,6 +52,16 @@ Route::middleware([Auth::class])->group(function () {
         //     Route::get('detail/{id}', [ProductController::class, 'detail'])->name('admin.product.detail');
         //     Route::get('export', [ProductController::class, 'export'])->name('admin.product.export');
         // });
+
+        Route::prefix('transactions')->group(function () {
+            Route::get('', [TransactionController::class, 'index'])->name('admin.transaction.index');
+            Route::get('data', [TransactionController::class, 'data'])->name('admin.transaction.data');
+            Route::get('add', [TransactionController::class, 'editor'])->name('admin.transaction.add');
+            Route::get('edit/{id}', [TransactionController::class, 'editor'])->name('admin.transaction.edit');
+            Route::get('detail/{id}', [TransactionController::class, 'detail'])->name('admin.transaction.detail');
+            Route::post('save', [TransactionController::class, 'save'])->name('admin.transaction.save');
+            Route::post('delete/{id}', [TransactionController::class, 'delete'])->name('admin.transaction.delete');
+        });
 
         Route::prefix('transaction-categories')->group(function () {
             Route::get('', [TransactionCategoryController::class, 'index'])->name('admin.transaction-category.index');

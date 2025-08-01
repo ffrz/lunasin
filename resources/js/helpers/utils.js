@@ -57,6 +57,10 @@ export function create_month_options() {
   ];
 }
 
+export function plusMinusSymbol(amount) {
+  return amount > 0 ? '+' : '';
+}
+
 export function plantAge(plant_date, toDate) {
   if (!plant_date) return 0;
   return `${(toDate ? dayjs(toDate) : dayjs()).diff(dayjs(plant_date), 'day')}`;
