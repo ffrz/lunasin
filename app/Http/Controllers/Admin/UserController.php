@@ -172,9 +172,7 @@ class UserController extends Controller
             $sheet->setCellValue('B1', 'Username');
             $sheet->setCellValue('C1', 'Nama Lengkap');
             $sheet->setCellValue('D1', 'Role');
-            $sheet->setCellValue('E1', 'Atasan');
-            $sheet->setCellValue('F1', 'Area Kerja');
-            $sheet->setCellValue('G1', 'Status');
+            $sheet->setCellValue('E1', 'Status');
 
             // Tambahkan data ke Excel
             $row = 2;
@@ -183,9 +181,7 @@ class UserController extends Controller
                 $sheet->setCellValue('B' . $row, $item->username);
                 $sheet->setCellValue('C' . $row, $item->name);
                 $sheet->setCellValue('D' . $row, User::Roles[$item->role]);
-                $sheet->setCellValue('E' . $row, $item->parent ? $item->parent->name : '');
-                $sheet->setCellValue('F' . $row, $item->work_area);
-                $sheet->setCellValue('G' . $row, $item->active ? 'Aktif' : 'Tidak Aktif');
+                $sheet->setCellValue('E' . $row, $item->active ? 'Aktif' : 'Tidak Aktif');
                 $row++;
             }
 
