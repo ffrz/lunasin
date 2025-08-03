@@ -1,5 +1,5 @@
 <script setup>
-import { formatNumber } from "@/helpers/utils";
+import { formatNumber, plusMinusSymbol } from "@/helpers/utils";
 import { usePage } from "@inertiajs/vue3";
 
 const page = usePage();
@@ -17,7 +17,18 @@ const page = usePage();
       <tr>
         <td>Jenis</td>
         <td>:</td>
-        <td>{{ page.props.data.type }}</td>
+        <td>{{ $CONSTANTS.PARTY_TYPES[page.props.data.type] }}</td>
+      </tr>
+      <tr>
+        <td>Utang / Piutang</td>
+        <td>:</td>
+        <td :class="page.props.data.balance >= 0 ? 'text-green' : 'text-red'">
+          Rp.
+          {{
+            plusMinusSymbol(page.props.data.balance) +
+            formatNumber(page.props.data.balance)
+          }}
+        </td>
       </tr>
       <tr>
         <td>No Telepon</td>
@@ -29,19 +40,11 @@ const page = usePage();
         <td>:</td>
         <td>{{ page.props.data.address }}</td>
       </tr>
-
       <tr>
         <td>Status</td>
         <td>:</td>
         <td>{{ page.props.data.active ? "Aktif" : "Tidak Aktif" }}</td>
       </tr>
-
-      <tr>
-        <td>Utang / Piutang</td>
-        <td>:</td>
-        <td>Rp. {{ formatNumber(page.props.data.balance) }}</td>
-      </tr>
-
       <tr>
         <td>Catatan</td>
         <td>:</td>

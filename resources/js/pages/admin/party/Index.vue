@@ -7,6 +7,7 @@ import {
   createOptions,
   formatNumber,
   getQueryParams,
+  plusMinusSymbol,
 } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import { usePageStorage } from "@/helpers/usePageStorage";
@@ -249,18 +250,20 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
                 {{ props.row.name }}
               </div>
             </q-td>
-            <q-td key="balance" :props="props">
-              {{ formatNumber(props.row.balance) }}
+            <q-td
+              key="balance"
+              :props="props"
+              :class="props.row.balance >= 0 ? 'text-green' : 'text-red'"
+            >
+              {{
+                plusMinusSymbol(props.row.balance) +
+                formatNumber(props.row.balance)
+              }}
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">
                 <q-btn
-                  :disabled="
-                    !check_role([
-                      $CONSTANTS.USER_ROLE_AGRONOMIST,
-                      $CONSTANTS.USER_ROLE_ADMIN,
-                    ])
-                  "
+                  :disabled="!check_role([$CONSTANTS.USER_ROLE_ADMIN])"
                   icon="more_vert"
                   dense
                   flat
