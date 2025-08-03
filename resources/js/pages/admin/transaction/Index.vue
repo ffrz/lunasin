@@ -2,18 +2,13 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
-import {
-  check_role,
-  formatNumber,
-  getQueryParams,
-  create_month_options,
-  create_year_options,
-  plusMinusSymbol,
-} from "@/helpers/utils";
+import { check_role, getQueryParams, plusMinusSymbol } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import dayjs from "dayjs";
+import { createMonthOptions, createYearOptions } from "@/helpers/options";
+import { formatNumber, formatNumberWithSymbol } from "@/helpers/formatter";
 
-const title = "Transaksi Kas";
+const title = "Transaksi";
 const page = usePage();
 const $q = useQuasar();
 const showFilter = ref(false);
@@ -26,12 +21,12 @@ const currentMonth = new Date().getMonth() + 1;
 const years = [
   { label: "Semua Tahun", value: "all" },
   { label: `${currentYear}`, value: currentYear },
-  ...create_year_options(currentYear - 2, currentYear - 1).reverse(),
+  ...createYearOptions(currentYear - 2, currentYear - 1).reverse(),
 ];
 
 const months = [
   { value: "all", label: "Semua Bulan" },
-  ...create_month_options(),
+  ...createMonthOptions(),
 ];
 
 const categories = [
@@ -309,10 +304,7 @@ watch(
                 </div>
                 <div>
                   <q-icon name="money" /> Rp.
-                  {{
-                    plusMinusSymbol(props.row.amount) +
-                    formatNumber(props.row.amount)
-                  }}
+                  {{ formatNumberWithSymbol(props.row.amount) }}
                 </div>
               </template>
             </q-td>
@@ -331,10 +323,7 @@ watch(
               style="text-align: right"
               :class="props.row.amount >= 0 ? 'text-green' : 'text-red'"
             >
-              {{
-                plusMinusSymbol(props.row.amount) +
-                formatNumber(props.row.amount)
-              }}
+              {{ formatNumberWithSymbol(props.row.amount) }}
             </q-td>
             <q-td key="notes" :props="props">
               {{ props.row.notes }}

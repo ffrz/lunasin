@@ -6,7 +6,7 @@ import LocaleNumberInput from "@/components/LocaleNumberInput.vue";
 import DateTimePicker from "@/components/DateTimePicker.vue";
 import dayjs from "dayjs";
 const page = usePage();
-const title = (!!page.props.data.id ? "Edit" : "Catat") + " Transaksi Keuangan";
+const title = (!!page.props.data.id ? "Edit" : "Catat") + " Transaksi";
 
 const parties = page.props.parties.map((party) => ({
   label: party.name,

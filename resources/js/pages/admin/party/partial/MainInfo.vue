@@ -1,5 +1,5 @@
 <script setup>
-import { formatNumber, plusMinusSymbol } from "@/helpers/utils";
+import { formatNumberWithSymbol } from "@/helpers/formatter";
 import { usePage } from "@inertiajs/vue3";
 
 const page = usePage();
@@ -24,10 +24,7 @@ const page = usePage();
         <td>:</td>
         <td :class="page.props.data.balance >= 0 ? 'text-green' : 'text-red'">
           Rp.
-          {{
-            plusMinusSymbol(page.props.data.balance) +
-            formatNumber(page.props.data.balance)
-          }}
+          {{ formatNumberWithSymbol(page.props.data.balance) }}
         </td>
       </tr>
       <tr>

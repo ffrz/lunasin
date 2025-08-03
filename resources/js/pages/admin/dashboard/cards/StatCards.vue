@@ -1,13 +1,12 @@
 <script setup>
-import { formatNumber } from '@/helpers/utils';
-import StatCard from './StatCard.vue';
+import StatCard from "./StatCard.vue";
 </script>
 
 <template>
   <div class="row">
     <q-card class="bg-transparent no-shadow no-border col" bordered>
       <q-card-section class="q-pa-none">
-        <div class="row q-col-gutter-sm ">
+        <div class="row q-col-gutter-sm">
           <!-- <StatCard :count="formatNumber($page.props.data.interaction_count)" label="Total Interaksi" icon="touch_app"
             :bg-color="'#BF360C'" :side-color="'#DF562C'" :to="route('admin.interaction.index', { status: 'done' })"
             wrapper-class="col-lg-3 col-sm-6 col-xs-12" />

@@ -2,16 +2,17 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { handleFetchItems, handleDelete } from "@/helpers/client-req-handler";
-import { create_options, getQueryParams } from "@/helpers/utils";
+import { getQueryParams } from "@/helpers/utils";
 import i18n from "@/i18n";
 import { useQuasar } from "quasar";
 import { usePageStorage } from "@/composables/usePageStorage";
+import { createOptions } from "@/helpers/options";
 
 const storage = usePageStorage("users");
 
 const roles = [
   { value: "all", label: "Semua" },
-  ...create_options(window.CONSTANTS.USER_ROLES),
+  ...createOptions(window.CONSTANTS.USER_ROLES),
 ];
 
 const statuses = [

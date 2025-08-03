@@ -2,19 +2,13 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { router } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
-import {
-  check_role,
-  createOptions,
-  formatNumber,
-  getQueryParams,
-  plusMinusSymbol,
-} from "@/helpers/utils";
-import { useQuasar } from "quasar";
+import { check_role, getQueryParams, plusMinusSymbol } from "@/helpers/utils";
 import { usePageStorage } from "@/composables/usePageStorage";
+import { createOptions } from "@/helpers/options";
+import { formatNumber } from "@/helpers/formatter";
 
 const storage = usePageStorage("parties");
 const title = "Pihak-pihak";
-const $q = useQuasar();
 const showFilter = ref(true);
 const rows = ref([]);
 const loading = ref(true);

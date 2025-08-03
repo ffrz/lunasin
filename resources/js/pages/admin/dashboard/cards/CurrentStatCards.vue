@@ -1,13 +1,12 @@
 <script setup>
-import { formatNumber } from '@/helpers/utils';
-import StatCard from './StatCard.vue';
+import StatCard from "./StatCard.vue";
 </script>
 
 <template>
   <div class="row">
     <q-card class="bg-transparent no-shadow no-border col" bordered>
       <q-card-section class="q-pa-none">
-        <div class="row q-col-gutter-sm ">
+        <div class="row q-col-gutter-sm">
           <!-- <StatCard :count="formatNumber($page.props.data.active_customer_count)" label="Client Aktif"
             icon="account_circle" :bg-color="'#1976D2'" :side-color="'#3996F2'"
             :to="route('admin.user.index', { status: 'active' })" wrapper-class="col-md-4 col-sm-6 col-xs-12" />

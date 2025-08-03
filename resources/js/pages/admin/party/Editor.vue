@@ -1,7 +1,8 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/vue3";
 import { handleSubmit } from "@/helpers/client-req-handler";
-import { createOptions, scrollToFirstErrorField } from "@/helpers/utils";
+import { scrollToFirstErrorField } from "@/helpers/utils";
+import { createOptions } from "@/helpers/options";
 
 const page = usePage();
 const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Pihak";
