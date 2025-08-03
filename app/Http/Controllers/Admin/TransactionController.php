@@ -17,7 +17,7 @@ class TransactionController extends Controller
     public function index()
     {
         return inertia('admin/transaction/Index', [
-            'parties' => Party::where('active', '=', true)->orderBy('name', 'asc')->get(),
+            'parties' => Party::query()->orderBy('name', 'asc')->get(),
             'categories' => TransactionCategory::query()->orderBy('name', 'asc')->get()
         ]);
     }
@@ -73,7 +73,7 @@ class TransactionController extends Controller
         $item->amount = abs($item->amount);
         return inertia('admin/transaction/Editor', [
             'data' => $item,
-            'parties' => Party::where('active', '=', true)->orderBy('name', 'asc')->get(),
+            'parties' => Party::query()->orderBy('name', 'asc')->get(),
             'categories' => TransactionCategory::query()->orderBy('name', 'asc')->get()
         ]);
     }

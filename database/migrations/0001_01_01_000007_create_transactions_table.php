@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by_uid')->nullable();
 
             $table->foreign('category_id')->references('id')->on('transaction_categories')->onDelete('restrict');
-            $table->foreign('party_id')->references('id')->on('parties')->onDelete('restrict');
+            $table->foreign('party_id')->references('id')->on('parties')->onDelete('cascade');
             $table->foreign('created_by_uid')->references('id')->on('users')->onDelete('set null');
             $table->foreign('updated_by_uid')->references('id')->on('users')->onDelete('set null');
         });

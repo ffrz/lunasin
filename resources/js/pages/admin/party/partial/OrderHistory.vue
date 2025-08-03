@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
-import { check_role, getQueryParams } from "@/helpers/utils";
+import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
@@ -214,7 +214,6 @@ const computedColumns = computed(() =>
           <q-td key="action" :props="props">
             <div class="flex justify-end">
               <q-btn
-                :disabled="!check_role($CONSTANTS.USER_ROLE_ADMIN)"
                 icon="more_vert"
                 dense
                 flat

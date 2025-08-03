@@ -2,11 +2,10 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
-import { check_role, getQueryParams, plusMinusSymbol } from "@/helpers/utils";
+import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
-import dayjs from "dayjs";
 import { createMonthOptions, createYearOptions } from "@/helpers/options";
-import { formatNumber, formatNumberWithSymbol } from "@/helpers/formatter";
+import { formateDatetime, formatNumberWithSymbol } from "@/helpers/formatter";
 
 const title = "Transaksi";
 const page = usePage();
@@ -293,18 +292,25 @@ watch(
             <q-td key="datetime" :props="props" class="wrap-column">
               <div>
                 <q-icon v-if="!$q.screen.gt.sm" name="calendar_today" />
-                {{ dayjs(props.row.datetime).format("DD/MM/YYYY") }}
+                {{ formateDatetime(props.row.datetime) }}
               </div>
               <template v-if="!$q.screen.gt.sm">
-                <div v-if="props.row.notes">
-                  <q-icon name="notes" /> {{ props.row.notes }}
+                <div v-if="props.row.party">
+                  <q-icon name="person" /> {{ props.row.party.name }}
                 </div>
                 <div v-if="props.row.category">
                   <q-icon name="category" /> {{ props.row.category.name }}
                 </div>
                 <div>
+                  <q-icon name="category" />
+                  {{ $CONSTANTS.TRANSACTION_TYPES[props.row.type] }}
+                </div>
+                <div>
                   <q-icon name="money" /> Rp.
                   {{ formatNumberWithSymbol(props.row.amount) }}
+                </div>
+                <div v-if="props.row.notes">
+                  <q-icon name="notes" /> {{ props.row.notes }}
                 </div>
               </template>
             </q-td>
@@ -331,7 +337,6 @@ watch(
             <q-td key="action" :props="props">
               <div class="flex justify-end">
                 <q-btn
-                  :disabled="!check_role($CONSTANTS.USER_ROLE_ADMIN)"
                   icon="more_vert"
                   dense
                   flat

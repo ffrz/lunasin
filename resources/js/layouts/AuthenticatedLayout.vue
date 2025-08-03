@@ -1,8 +1,7 @@
 <script setup>
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
-import { check_role } from "@/helpers/utils.js";
 
 defineComponent({
   name: "AuthenticatedLayout",
@@ -208,7 +207,7 @@ onMounted(() => {
             </q-item-section>
           </q-item>
           <q-separator />
-          <q-item
+          <!-- <q-item
             clickable
             v-ripple
             :active="$page.url.startsWith('/admin/settings/users')"
@@ -220,7 +219,7 @@ onMounted(() => {
             <q-item-section>
               <q-item-label>Pengguna</q-item-label>
             </q-item-section>
-          </q-item>
+          </q-item> -->
           <q-item
             clickable
             v-ripple

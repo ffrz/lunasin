@@ -2,10 +2,10 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { router } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
-import { check_role, getQueryParams, plusMinusSymbol } from "@/helpers/utils";
+import { getQueryParams } from "@/helpers/utils";
 import { usePageStorage } from "@/composables/usePageStorage";
 import { createOptions } from "@/helpers/options";
-import { formatNumber } from "@/helpers/formatter";
+import { formatNumberWithSymbol } from "@/helpers/formatter";
 
 const storage = usePageStorage("parties");
 const title = "Pihak-pihak";
@@ -101,12 +101,6 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
         dense
         color="primary"
         @click="router.get(route('admin.party.add'))"
-        :disabled="
-          !check_role([
-            $CONSTANTS.USER_ROLE_AGRONOMIST,
-            $CONSTANTS.USER_ROLE_ADMIN,
-          ])
-        "
       />
       <q-btn
         class="q-ml-sm"
@@ -249,15 +243,11 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
               :props="props"
               :class="props.row.balance >= 0 ? 'text-green' : 'text-red'"
             >
-              {{
-                plusMinusSymbol(props.row.balance) +
-                formatNumber(props.row.balance)
-              }}
+              {{ formatNumberWithSymbol(props.row.balance) }}
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">
                 <q-btn
-                  :disabled="!check_role([$CONSTANTS.USER_ROLE_ADMIN])"
                   icon="more_vert"
                   dense
                   flat
@@ -300,7 +290,6 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
                         <q-item-section>Edit</q-item-section>
                       </q-item>
                       <q-item
-                        v-if="check_role([$CONSTANTS.USER_ROLE_ADMIN])"
                         @click.stop="deleteItem(props.row)"
                         clickable
                         v-ripple
