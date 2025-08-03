@@ -20,11 +20,6 @@ return [
         'numeric' => ':attribute harus lebih dari :value'
     ],
 
-    // 'custom' => [
-    //     'email' => [
-    //         'required' => 'Alamat email harus diisi.',
-    //     ],
-    // ],
     'attributes' => [
         'username' => 'ID Pengguna',
         'name' => 'Nama',
@@ -35,13 +30,8 @@ return [
         'date' => 'Tanggal',
         'description' => 'Deskripsi',
         'category_id' => 'Kategori',
-        'service_id' => 'Layanan',
         'notes' => 'Catatan',
         'amount' => 'Jumlah',
-        'customer_id' => 'Client',
-        'customer_name' => 'Nama Client',
-        'customer_phone' => 'No Telepon',
-        'customer_address' => 'Alamat',
         'company_name' => 'Nama Perusahaan',
         'company_phone' => 'No Telepon',
         'company_address' => 'Alamat',

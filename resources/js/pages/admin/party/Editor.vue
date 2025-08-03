@@ -1,5 +1,5 @@
 <script setup>
-import { router, useForm, usePage } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { handleSubmit } from "@/helpers/client-req-handler";
 import { createOptions, scrollToFirstErrorField } from "@/helpers/utils";
 

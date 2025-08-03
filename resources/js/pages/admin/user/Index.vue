@@ -5,7 +5,7 @@ import { handleFetchItems, handleDelete } from "@/helpers/client-req-handler";
 import { create_options, getQueryParams } from "@/helpers/utils";
 import i18n from "@/i18n";
 import { useQuasar } from "quasar";
-import { usePageStorage } from "@/helpers/usePageStorage";
+import { usePageStorage } from "@/composables/usePageStorage";
 
 const storage = usePageStorage("users");
 

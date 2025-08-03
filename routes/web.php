@@ -41,18 +41,6 @@ Route::middleware([Auth::class])->group(function () {
             return inertia('admin/About');
         })->name('admin.about');
 
-        // Route::prefix('products')->group(function () {
-        //     Route::get('', [ProductController::class, 'index'])->name('admin.product.index');
-        //     Route::get('data', [ProductController::class, 'data'])->name('admin.product.data');
-        //     Route::get('add', [ProductController::class, 'editor'])->name('admin.product.add');
-        //     Route::get('duplicate/{id}', [ProductController::class, 'duplicate'])->name('admin.product.duplicate');
-        //     Route::get('edit/{id}', [ProductController::class, 'editor'])->name('admin.product.edit');
-        //     Route::post('save', [ProductController::class, 'save'])->name('admin.product.save');
-        //     Route::post('delete/{id}', [ProductController::class, 'delete'])->name('admin.product.delete');
-        //     Route::get('detail/{id}', [ProductController::class, 'detail'])->name('admin.product.detail');
-        //     Route::get('export', [ProductController::class, 'export'])->name('admin.product.export');
-        // });
-
         Route::prefix('transactions')->group(function () {
             Route::get('', [TransactionController::class, 'index'])->name('admin.transaction.index');
             Route::get('data', [TransactionController::class, 'data'])->name('admin.transaction.data');
@@ -85,23 +73,10 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('export', [PartyController::class, 'export'])->name('admin.party.export');
         });
 
-        // Route::prefix('activity-types')->group(function () {
-        //     Route::get('', [ActivityTypeController::class, 'index'])->name('admin.activity-type.index');
-        //     Route::get('data', [ActivityTypeController::class, 'data'])->name('admin.activity-type.data');
-        //     Route::get('add', [ActivityTypeController::class, 'editor'])->name('admin.activity-type.add');
-        //     Route::get('duplicate/{id}', [ActivityTypeController::class, 'duplicate'])->name('admin.activity-type.duplicate');
-        //     Route::get('edit/{id}', [ActivityTypeController::class, 'editor'])->name('admin.activity-type.edit');
-        //     Route::post('save', [ActivityTypeController::class, 'save'])->name('admin.activity-type.save');
-        //     Route::post('delete/{id}', [ActivityTypeController::class, 'delete'])->name('admin.activity-type.delete');
-        // });
-
         Route::prefix('settings')->group(function () {
             Route::get('profile/edit', [ProfileController::class, 'edit'])->name('admin.profile.edit');
             Route::post('profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
             Route::post('profile/update-password', [ProfileController::class, 'updatePassword'])->name('admin.profile.update-password');
-
-            // Route::get('company-profile/edit', [CompanyProfileController::class, 'edit'])->name('admin.company-profile.edit');
-            // Route::post('company-profile/update', [CompanyProfileController::class, 'update'])->name('admin.company-profile.update');
 
             Route::prefix('users')->group(function () {
                 Route::get('', [UserController::class, 'index'])->name('admin.user.index');

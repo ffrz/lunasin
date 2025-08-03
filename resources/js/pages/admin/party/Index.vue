@@ -10,7 +10,7 @@ import {
   plusMinusSymbol,
 } from "@/helpers/utils";
 import { useQuasar } from "quasar";
-import { usePageStorage } from "@/helpers/usePageStorage";
+import { usePageStorage } from "@/composables/usePageStorage";
 
 const storage = usePageStorage("parties");
 const title = "Pihak-pihak";

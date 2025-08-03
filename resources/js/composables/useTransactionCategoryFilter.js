@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-export function useProductCategoryFilter(rawCategories, includeAllOption = false) {
+export function useTransactionCategoryFilter(rawCategories, includeAllOption = false) {
   const baseCategories = rawCategories.map(item => ({
     value: item.id,
     label: item.name

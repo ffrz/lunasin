@@ -124,25 +124,6 @@ onMounted(() => {
                 </q-item-section>
               </q-item>
               <q-item
-                v-close-popup
-                v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN"
-                class="subnav"
-                clickable
-                v-ripple
-                :active="
-                  $page.url.startsWith('/admin/settings/company-profile')
-                "
-                @click="router.get(route('admin.company-profile.edit'))"
-              >
-                <q-item-section>
-                  <q-item-label
-                    ><q-icon name="home_work" class="q-mr-sm" />
-                    {{ $t("company_profile") }}</q-item-label
-                  >
-                </q-item-section>
-              </q-item>
-              <q-separator />
-              <q-item
                 clickable
                 v-close-popup
                 v-ripple
