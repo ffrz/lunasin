@@ -20,6 +20,7 @@ class PartyFactory extends Factory
     {
         $address = $this->faker->address();
         return [
+            'user_id' => $this->faker->randomElement([1, 2]),
             'name' => $this->faker->company(),
             'type' => $this->faker->randomElement(array_keys(Party::Types)),
             'phone' => $this->faker->phoneNumber(),

@@ -38,10 +38,10 @@
     </tbody>
     <tfoot>
       <tr>
-        <th colspan="2" style="text-align: right">Total</th>
+        <th style="text-align: right" colspan="2">Total</th>
         <th style="text-align: right">{{ format_number($total_closings) }}</th>
         <th style="text-align: right">{{ format_number($total_amount) }}</th>
-        <th style="text-align: right">{{ format_number($total_closings > 0 ? $total_amount / $total_closings : '0' ) }}</th>
+        <th style="text-align: right">{{ format_number($total_closings > 0 ? $total_amount / $total_closings : '0') }}</th>
       </tr>
     </tfoot>
   </table>

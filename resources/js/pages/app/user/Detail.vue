@@ -35,7 +35,7 @@ const title = "Rincian Pengguna";
                   <tr>
                     <td style="width: 125px">ID Pengguna</td>
                     <td style="width: 1px">:</td>
-                    <td>{{ page.props.data.username }}</td>
+                    <td>{{ page.props.data.email }}</td>
                   </tr>
                   <tr>
                     <td>Nama Pengguna</td>

@@ -1,5 +1,3 @@
-
-
 @extends('report.layout', [
     'title' => $title,
 ])
@@ -31,7 +29,7 @@
           <td>{{ $item->date }}</td>
           <td>{{ \App\Models\Interaction::Types[$item->type] }}</td>
           @if (!$user)
-            <td>{{ $item->user->name }} ({{ $item->user->username }})</td>
+            <td>{{ $item->user->name }} ({{ $item->user->email }})</td>
           @endif
           <td>
             {{ $item->customer->name }}

@@ -1,5 +1,9 @@
 <script setup>
-import { formatNumberWithSymbol } from "@/helpers/formatter";
+import {
+  dateTimeFromNow,
+  formatDatetime,
+  formatNumberWithSymbol,
+} from "@/helpers/formatter";
 import { usePage } from "@inertiajs/vue3";
 
 const page = usePage();
@@ -51,13 +55,9 @@ const page = usePage();
         <td>Dibuat</td>
         <td>:</td>
         <td>
-          {{ $dayjs(page.props.data.created_datetime).fromNow() }} -
-          {{
-            $dayjs(page.props.data.created_datetime).format(
-              "DD MMMM YY HH:mm:ss"
-            )
-          }}
-          <template v-if="page.props.data.created_by_user">
+          {{ dateTimeFromNow(page.props.data.created_datetime) }} -
+          {{ formatDatetime(page.props.data.created_datetime) }}
+          <!-- <template v-if="page.props.data.created_by_user">
             oleh
             <my-link
               :href="
@@ -66,22 +66,18 @@ const page = usePage();
                 })
               "
             >
-              {{ page.props.data.created_by_user.username }}
+              {{ page.props.data.created_by_user.email }}
             </my-link>
-          </template>
+          </template> -->
         </td>
       </tr>
       <tr v-if="page.props.data.updated_datetime">
         <td>Diperbarui</td>
         <td>:</td>
         <td>
-          {{ $dayjs(page.props.data.updated_datetime).fromNow() }} -
-          {{
-            $dayjs(page.props.data.updated_datetime).format(
-              "DD MMMM YY HH:mm:ss"
-            )
-          }}
-          <template v-if="page.props.data.updated_by_user">
+          {{ dateTimeFromNow(page.props.data.updated_datetime) }} -
+          {{ formatDatetime(page.props.data.updated_datetime) }}
+          <!-- <template v-if="page.props.data.updated_by_user">
             oleh
             <my-link
               :href="
@@ -90,9 +86,9 @@ const page = usePage();
                 })
               "
             >
-              {{ page.props.data.updated_by_user.username }}
+              {{ page.props.data.updated_by_user.email }}
             </my-link>
-          </template>
+          </template> -->
         </td>
       </tr>
     </tbody>

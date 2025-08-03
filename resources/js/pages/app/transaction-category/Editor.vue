@@ -4,8 +4,7 @@ import { handleSubmit } from "@/helpers/client-req-handler";
 import { scrollToFirstErrorField } from "@/helpers/utils";
 
 const page = usePage();
-const title =
-  (!!page.props.data.id ? "Edit" : "Tambah") + " Kategori Transaksi";
+const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Kategori";
 
 const form = useForm({
   id: page.props.data.id,

@@ -4,8 +4,8 @@ import { useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 
 let form = useForm({
-  username: window.CONFIG.APP_DEMO ? "admin" : "",
-  password: window.CONFIG.APP_DEMO ? "12345" : "",
+  email: window.CONFIG.APP_DEMO ? "john@example.com" : "",
+  password: window.CONFIG.APP_DEMO ? "123456" : "",
   remember: true,
 });
 
@@ -37,15 +37,15 @@ const showPassword = ref(false);
               </q-card-section>
               <q-card-section>
                 <q-input
-                  v-model.trim="form.username"
-                  label="Username"
+                  v-model.trim="form.email"
+                  label="Email"
                   lazy-rules
-                  :error="!!form.errors.username"
-                  autocomplete="username"
-                  :error-message="form.errors.username"
+                  :error="!!form.errors.email"
+                  autocomplete="email"
+                  :error-message="form.errors.email"
                   :disable="form.processing"
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Masukkan Username',
+                    (val) => (val && val.length > 0) || 'Masukkan alamat email',
                   ]"
                 >
                   <template v-slot:append>

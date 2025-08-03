@@ -17,7 +17,7 @@
       @forelse ($items as $index => $item)
         <tr>
           <td align="right">{{ $index + 1 }}</td>
-          <td>{{ $item->username }}</td>
+          <td>{{ $item->email }}</td>
           <td>{{ $item->name }}</td>
           <td>{{ \App\Models\User::Roles[$item->role] }}</td>
           <td>{{ $item->active ? 'Aktif' : 'Non Aktif' }}</td>

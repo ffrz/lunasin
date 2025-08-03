@@ -24,8 +24,8 @@ class PartyController extends Controller
     {
         return inertia('app/party/Detail', [
             'data' => Party::with([
-                'created_by_user:id,username,name',
-                'updated_by_user:id,username,name',
+                'created_by_user:id,name',
+                'updated_by_user:id,name',
             ])->findOrFail($id),
         ]);
     }
@@ -43,7 +43,7 @@ class PartyController extends Controller
                 $q->where('name', 'like', '%' . $filter['search'] . '%');
                 $q->orWhere('phone', 'like', '%' . $filter['search'] . '%');
                 $q->orWhere('address', 'like', '%' . $filter['search'] . '%');
-                $q->orWhere('notes', 'like', '%' . $filter['notes'] . '%');
+                $q->orWhere('notes', 'like', '%' . $filter['search'] . '%');
             });
         }
 
@@ -77,7 +77,6 @@ class PartyController extends Controller
         $item = $id ? Party::findOrFail($id) : new Party(['active' => true]);
         return inertia('app/party/Editor', [
             'data' => $item,
-            'users' => User::where('active', true)->orderBy('username', 'asc')->get(),
         ]);
     }
 
@@ -101,8 +100,6 @@ class PartyController extends Controller
 
     public function delete($id)
     {
-        allowed_roles([User::Role_Admin]);
-
         $item = Party::findOrFail($id);
         $item->delete();
 
@@ -116,8 +113,6 @@ class PartyController extends Controller
      */
     public function export(Request $request)
     {
-        // allowed_roles([User::Role_Admin]);
-
         $items = Party::orderBy('name', 'asc')->get();
 
         $title = 'Daftar Pihak';

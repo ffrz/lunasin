@@ -5,7 +5,7 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
-const title = "Kategori Transaksi";
+const title = "Kategori";
 const $q = useQuasar();
 const showFilter = ref(false);
 const rows = ref([]);

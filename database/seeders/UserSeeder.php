@@ -17,22 +17,19 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'id' => 1,
-                'name' => 'Admin',
-                'role' => User::Role_Admin,
+                'name' => 'Fahmi Fauzi Rahman',
+                'email' => 'fahmi@example.com',
             ],
             [
                 'id' => 2,
-                'name' => 'User',
-                'role' => User::Role_User,
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
             ],
         ];
 
-        $password = Hash::make('12345');
+        $password = Hash::make('123456');
 
         foreach ($users as &$user) {
-            $username = strtolower(str_replace(' ', '', $user['name']));
-            $user['name'] = ucwords(strtolower($user['name']));
-            $user['username'] = $username;
             $user['password'] = $password;
             $user['active'] = true;
         }

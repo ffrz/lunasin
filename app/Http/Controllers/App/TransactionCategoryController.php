@@ -12,7 +12,6 @@ class TransactionCategoryController extends Controller
 {
     public function index()
     {
-        allowed_roles([User::Role_Admin]);
         return inertia('app/transaction-category/Index');
     }
 
@@ -39,7 +38,6 @@ class TransactionCategoryController extends Controller
 
     public function duplicate($id)
     {
-        allowed_roles([User::Role_Admin]);
         $item = TransactionCategory::findOrFail($id);
         $item->id = null;
         return inertia('app/transaction-category/Editor', [
@@ -49,7 +47,6 @@ class TransactionCategoryController extends Controller
 
     public function editor($id = 0)
     {
-        allowed_roles([User::Role_Admin]);
         $item = $id ? TransactionCategory::findOrFail($id) : new TransactionCategory();
         return inertia('app/transaction-category/Editor', [
             'data' => $item,
@@ -64,7 +61,9 @@ class TransactionCategoryController extends Controller
             'name' => [
                 'required',
                 'max:255',
-                Rule::unique('transaction_categories', 'name')->ignore($item->id),
+                Rule::unique('transaction_categories', 'name')
+                    ->where(fn($query) => $query->where('user_id', auth()->id()))
+                    ->ignore($item->id),
             ],
             'description' => 'nullable|max:1000',
         ]);
@@ -85,8 +84,6 @@ class TransactionCategoryController extends Controller
 
     public function delete($id)
     {
-        allowed_roles([User::Role_Admin]);
-
         $item = TransactionCategory::findOrFail($id);
         $item->delete();
 

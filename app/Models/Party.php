@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
-class Party extends Model
+class Party extends BaseModel
 {
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'phone',
         'type',
@@ -17,6 +18,11 @@ class Party extends Model
         'notes',
         'active',
         'balance',
+    ];
+
+    protected $casts = [
+        'type' => 'string',
+        'active' => 'boolean',
     ];
 
     const Type_Personal   = 'personal';
@@ -29,9 +35,7 @@ class Party extends Model
 
     public static function activePartyCount()
     {
-        return DB::select(
-            "select count(0) as count from parties where active=1"
-        )[0]->count;
+        return self::where('active', 1)->where('user_id', Auth::id())->count();
     }
 
     public function created_by_user()
@@ -42,5 +46,10 @@ class Party extends Model
     public function updated_by_user()
     {
         return $this->belongsTo(User::class, 'updated_by_uid');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

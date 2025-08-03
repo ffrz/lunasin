@@ -16,6 +16,7 @@ class PartySeeder extends Seeder
         $items = [
             [
                 'id' => 1,
+                'user_id' => 1,
                 'name' => 'Ayat HTC',
                 'type' => Party::Type_Company,
                 'active' => true,
@@ -23,6 +24,7 @@ class PartySeeder extends Seeder
             ],
             [
                 'id' => 2,
+                'user_id' => 1,
                 'name' => 'Anadzsa',
                 'role' => Party::Type_Company,
                 'active' => true,
@@ -30,6 +32,7 @@ class PartySeeder extends Seeder
             ],
             [
                 'id' => 3,
+                'user_id' => 1,
                 'name' => 'Ajis',
                 'role' => Party::Type_Personal,
                 'active' => true,
@@ -37,6 +40,7 @@ class PartySeeder extends Seeder
             ],
             [
                 'id' => 5,
+                'user_id' => 1,
                 'name' => 'Eman',
                 'role' => Party::Type_Personal,
                 'active' => true,

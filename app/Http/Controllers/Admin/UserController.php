@@ -49,7 +49,7 @@ class UserController extends Controller
         if (!empty($filter['search'])) {
             $q->where(function ($query) use ($filter) {
                 $query->where('name', 'like', '%' . $filter['search'] . '%')
-                    ->orWhere('username', 'like', '%' . $filter['search'] . '%');
+                    ->orWhere('email', 'like', '%' . $filter['search'] . '%');
             });
         }
 
@@ -60,8 +60,6 @@ class UserController extends Controller
 
     public function duplicate($id)
     {
-        allowed_roles(User::Role_Admin);
-
         $user = User::findOrFail($id);
         $user->id = null;
         $user->created_at = null;
@@ -72,8 +70,6 @@ class UserController extends Controller
 
     public function editor($id = 0)
     {
-        allowed_roles(User::Role_Admin);
-
         $user = $id ? User::findOrFail($id) : new User();
 
         if (!$id) {
@@ -90,8 +86,6 @@ class UserController extends Controller
 
     public function save(Request $request)
     {
-        allowed_roles(User::Role_Admin);
-
         $rules = [
             'name' => 'required|max:255',
             'password' => 'required|min:5|max:40',
@@ -100,16 +94,16 @@ class UserController extends Controller
 
         $user = null;
         $message = '';
-        $fields = ['name', 'username', 'role', 'active'];
+        $fields = ['name', 'email', 'role', 'active'];
         $password = $request->get('password');
         if (!$request->id) {
-            // username harus unik
-            $rules['username'] = "required|alpha_num|max:255|unique:users,username,NULL,id";
+            // email harus unik
+            $rules['email'] = "required|alpha_num|max:255|unique:users,email,NULL,id";
             $request->validate($rules);
             $user = new User();
         } else {
-            // username harus unik, exclude id
-            $rules['username'] = "required|alpha_num|max:255|unique:users,username,{$request->id},id";
+            // email harus unik, exclude id
+            $rules['email'] = "required|alpha_num|max:255|unique:users,email,{$request->id},id";
             if (empty($request->get('password'))) {
                 // kalau password tidak diisi, skip validation dan jangan update password
                 unset($rules['password']);
@@ -125,15 +119,13 @@ class UserController extends Controller
         $user->fill($request->only($fields));
         $user->save();
 
-        $message = "Pengguna {$user->username} telah " . ($request->id ? 'diperbarui' : 'ditambahkan') . '.';
+        $message = "Pengguna {$user->email} telah " . ($request->id ? 'diperbarui' : 'ditambahkan') . '.';
 
         return redirect(route('app.user.index'))->with('success', $message);
     }
 
     public function delete($id)
     {
-        allowed_roles(User::Role_Admin);
-
         $user = User::findOrFail($id);
 
         if ($user->id == Auth::user()->id) {
@@ -145,7 +137,7 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json([
-            'message' => "Pengguna {$user->username} telah dihapus!"
+            'message' => "Pengguna {$user->email} telah dihapus!"
         ]);
     }
 
@@ -171,17 +163,15 @@ class UserController extends Controller
             $sheet->setCellValue('A1', 'No');
             $sheet->setCellValue('B1', 'Username');
             $sheet->setCellValue('C1', 'Nama Lengkap');
-            $sheet->setCellValue('D1', 'Role');
-            $sheet->setCellValue('E1', 'Status');
+            $sheet->setCellValue('D1', 'Status');
 
             // Tambahkan data ke Excel
             $row = 2;
             foreach ($items as $num => $item) {
                 $sheet->setCellValue('A' . $row, $num + 1);
-                $sheet->setCellValue('B' . $row, $item->username);
+                $sheet->setCellValue('B' . $row, $item->email);
                 $sheet->setCellValue('C' . $row, $item->name);
-                $sheet->setCellValue('D' . $row, User::Roles[$item->role]);
-                $sheet->setCellValue('E' . $row, $item->active ? 'Aktif' : 'Tidak Aktif');
+                $sheet->setCellValue('D' . $row, $item->active ? 'Aktif' : 'Tidak Aktif');
                 $row++;
             }
 

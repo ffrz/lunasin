@@ -10,7 +10,7 @@ const title = !!page.props.data.id ? "Edit Pengguna" : "Tambah Pengguna";
 const form = useForm({
   id: page.props.data.id,
   name: page.props.data.name,
-  username: page.props.data.username,
+  email: page.props.data.email,
   password: "",
   role: !!page.props.data.role ? page.props.data.role : roles[0].value,
   active: !!page.props.data.active,
@@ -45,13 +45,13 @@ const submit = () => handleSubmit({ form, url: route("app.user.save") });
                 ]"
               />
               <q-input
-                v-model.trim="form.username"
+                v-model.trim="form.email"
                 type="text"
                 label="ID Pengguna"
                 lazy-rules
                 :disable="form.processing"
-                :error="!!form.errors.username"
-                :error-message="form.errors.username"
+                :error="!!form.errors.email"
+                :error-message="form.errors.email"
                 :rules="[
                   (val) =>
                     (val && val.length > 0) || 'ID Pengguna harus diisi.',

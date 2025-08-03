@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('settings', function (Blueprint $table) {
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('key')->primary();
             $table->text('value');
 
@@ -20,6 +21,8 @@ return new class extends Migration
 
             $table->foreignId('created_by_uid')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by_uid')->nullable()->constrained('users')->nullOnDelete();
+
+            $table->unique(['user_id', 'key']);
         });
     }
 

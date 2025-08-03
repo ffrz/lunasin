@@ -191,7 +191,7 @@ const computedColumns = computed(() =>
             {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
           </q-td>
           <q-td key="sales" :props="props">
-            {{ props.row.user.username }}
+            {{ props.row.user.email }}
           </q-td>
 
           <q-td key="service" :props="props">

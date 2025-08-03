@@ -53,7 +53,7 @@
       <h3 style="margin:0;text-align:center;">{{ $subtitle }}</h2>
     @endforeach
     <div style="text-align:center;font-size:10px;font-weight:normal;">
-      Dibuat oleh <b>{{ Auth::user()->username }}</b>
+      Dibuat oleh <b>{{ Auth::user()->email }}</b>
       pada {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i:s') }}
       - {{ env('APP_NAME') }} v{{ env('APP_VERSION_STR') }}
     </div>

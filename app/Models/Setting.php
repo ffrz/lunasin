@@ -2,18 +2,12 @@
 
 namespace App\Models;
 
-class Setting extends Model
-{
-    protected $primaryKey = 'key';
-    public $incrementing = false;
-    protected $keyType = 'string';
+use Illuminate\Support\Facades\Auth;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+class Setting extends BaseModel
+{
     protected $fillable = [
+        'user_id',
         'key',
         'value',
         'lastmod_datetime',
@@ -21,35 +15,41 @@ class Setting extends Model
         'lastmod_username',
     ];
 
-    static $settings = [];
-    static $is_initialized = false;
+    protected static $settings = [];
+    protected static $isInitialized = [];
 
-    private static function _init()
+    private static function _init($userId)
     {
-        if (!static::$is_initialized) {
-            $items = Setting::all();
+        if (!isset(static::$isInitialized[$userId])) {
+            $items = static::where('user_id', $userId)->get();
             foreach ($items as $item) {
-                static::$settings[$item->key] = $item->value;
+                static::$settings[$userId][$item->key] = $item->value;
             }
-            static::$is_initialized = true;
+            static::$isInitialized[$userId] = true;
         }
     }
 
-    public static function value($key, $default = null)
+    public static function value($key, $default = null, $userId = null)
     {
-        static::_init();
-        return isset(static::$settings[$key]) ? static::$settings[$key] : $default;
+        $userId = $userId ?? Auth::id(); // default to current user
+        static::_init($userId);
+        return static::$settings[$userId][$key] ?? $default;
     }
 
-    public static function values()
+    public static function values($userId = null)
     {
-        static::_init();
-        return static::$settings;
+        $userId = $userId ?? Auth::id();
+        static::_init($userId);
+        return static::$settings[$userId];
     }
 
-    public static function setValue($key, $value)
+    public static function setValue($key, $value, $userId = null)
     {
-        Setting::updateOrCreate(['key' => $key], ['value' => $value]);
-        static::$settings[$key] = $value;
+        $userId = $userId ?? Auth::id();
+        static::updateOrCreate(
+            ['user_id' => $userId, 'key' => $key],
+            ['value' => $value]
+        );
+        static::$settings[$userId][$key] = $value;
     }
 }

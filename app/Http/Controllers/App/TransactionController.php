@@ -65,10 +65,6 @@ class TransactionController extends Controller
 
     public function editor($id = 0)
     {
-        if ($id != 0) {
-            allowed_roles([User::Role_Admin]);
-        }
-
         $item = $id ? Transaction::findOrFail($id) : new Transaction(['datetime' => Carbon::now()]);
         $item->amount = abs($item->amount);
         return inertia('app/transaction/Editor', [
@@ -80,10 +76,6 @@ class TransactionController extends Controller
 
     public function save(Request $request)
     {
-        if ($request->id != 0) {
-            allowed_roles([User::Role_Admin]);
-        }
-
         $validated = $request->validate([
             'id'          => 'nullable|exists:transactions,id', // tambahkan ini
             'party_id'    => 'required|exists:parties,id',
@@ -175,8 +167,6 @@ class TransactionController extends Controller
 
     public function delete($id)
     {
-        allowed_roles([User::Role_Admin]);
-
         $item = Transaction::findOrFail($id);
 
         DB::beginTransaction();

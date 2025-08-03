@@ -78,7 +78,7 @@ const fetchItems = (props = null) =>
 const deleteItem = (row) =>
   handleDelete({
     url: route("app.user.delete", row.id),
-    message: `Hapus pengguna ${row.username}?`,
+    message: `Hapus pengguna ${row.email}?`,
     fetchItemsCallback: fetchItems,
     loading,
   });
@@ -239,11 +239,11 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
           >
             <q-td key="username" :props="props">
               <div v-if="$q.screen.gt.sm">
-                {{ props.row.username }}
+                {{ props.row.email }}
               </div>
               <div v-else>
                 <q-icon name="person" />
-                {{ props.row.name }} ({{ props.row.username }})
+                {{ props.row.name }} ({{ props.row.email }})
               </div>
               <template v-if="!$q.screen.gt.sm">
                 <div class="elipsis" style="max-width: 200px">
@@ -263,7 +263,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
                 <q-btn
                   :disable="
                     props.row.id == currentUser.id ||
-                    props.row.username == 'admin' ||
+                    props.row.email == 'admin' ||
                     $page.props.auth.user.role != $CONSTANTS.USER_ROLE_ADMIN
                   "
                   icon="more_vert"

@@ -8,15 +8,6 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    public const Role_Admin = 'admin';
-    public const Role_User = 'user';
-
-    // Display role di hardcode saja, tidak diambil dari translations
-    public const Roles = [
-        self::Role_User => 'Standard User',
-        self::Role_Admin => 'Administrator',
-    ];
-
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -27,10 +18,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'username',
+        'email',
         'active',
         'password',
-        'role',
         'last_login_datetime',
         'last_activity_description',
         'last_activity_datetime'

@@ -34,7 +34,7 @@ const users = [
   { value: "all", label: "Semua" },
   ...page.props.users.map((user) => ({
     value: user.id,
-    label: `${user.name} (${user.username})`,
+    label: `${user.name} (${user.email})`,
   })),
 ];
 

@@ -15,9 +15,9 @@ class TransactionCategorySeeder extends Seeder
     public function run(): void
     {
         $items = [
-            ['name' => 'Bisnis'],
-            ['name' => 'Pribadi'],
-            ['name' => 'Lainnya'],
+            ['name' => 'Bisnis', 'user_id' => 1],
+            ['name' => 'Pribadi', 'user_id' => 1],
+            ['name' => 'Lainnya', 'user_id' => 1],
         ];
 
         DB::table('transaction_categories')->insert($items);

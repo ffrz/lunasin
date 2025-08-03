@@ -5,7 +5,7 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import { createMonthOptions, createYearOptions } from "@/helpers/options";
-import { formateDatetime, formatNumberWithSymbol } from "@/helpers/formatter";
+import { formatDatetime, formatNumberWithSymbol } from "@/helpers/formatter";
 
 const title = "Transaksi";
 const page = usePage();
@@ -260,7 +260,6 @@ watch(
     </template>
     <div class="q-pa-sm">
       <q-table
-        class="full-height-table"
         flat
         bordered
         square
@@ -292,7 +291,7 @@ watch(
             <q-td key="datetime" :props="props" class="wrap-column">
               <div>
                 <q-icon v-if="!$q.screen.gt.sm" name="calendar_today" />
-                {{ formateDatetime(props.row.datetime) }}
+                {{ formatDatetime(props.row.datetime) }}
               </div>
               <template v-if="!$q.screen.gt.sm">
                 <div v-if="props.row.party">
@@ -306,8 +305,13 @@ watch(
                   {{ $CONSTANTS.TRANSACTION_TYPES[props.row.type] }}
                 </div>
                 <div>
-                  <q-icon name="money" /> Rp.
-                  {{ formatNumberWithSymbol(props.row.amount) }}
+                  <q-icon name="money" />
+                  <span
+                    :class="props.row.amount >= 0 ? 'text-green' : 'text-red'"
+                  >
+                    Rp.
+                    {{ formatNumberWithSymbol(props.row.amount) }}
+                  </span>
                 </div>
                 <div v-if="props.row.notes">
                   <q-icon name="notes" /> {{ props.row.notes }}

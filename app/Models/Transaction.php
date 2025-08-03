@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Transaction extends Model
+class Transaction extends BaseModel
 {
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'party_id',
         'category_id',
         'type',
@@ -79,5 +80,10 @@ class Transaction extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by_uid');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

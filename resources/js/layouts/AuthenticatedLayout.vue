@@ -92,7 +92,7 @@ onMounted(() => {
             :class="{ 'profile-btn-active': isDropdownOpen }"
           >
             <q-list id="profile-btn-popup" style="color: #444">
-              <q-item>
+              <q-item @click="router.get(route('app.profile.edit'))" clickable>
                 <q-avatar style="margin-left: -15px"
                   ><q-icon name="person"
                 /></q-avatar>
@@ -100,42 +100,9 @@ onMounted(() => {
                   <q-item-label>
                     <div class="text-bold">{{ page.props.auth.user.name }}</div>
                     <div class="text-grey-8 text-caption">
-                      {{ $CONSTANTS.USER_ROLES[page.props.auth.user.role] }} @
-                      {{ $config.APP_NAME }}
+                      {{ page.props.auth.user.email }}
                     </div>
                   </q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-separator />
-              <q-item
-                v-close-popup
-                class="subnav"
-                clickable
-                v-ripple
-                :active="$page.url.startsWith('/app/settings/profile')"
-                @click="router.get(route('app.profile.edit'))"
-              >
-                <q-item-section>
-                  <q-item-label
-                    ><q-icon name="manage_accounts" class="q-mr-sm" />
-                    {{ $t("my_profile") }}</q-item-label
-                  >
-                </q-item-section>
-              </q-item>
-              <q-item
-                clickable
-                v-close-popup
-                v-ripple
-                style="color: inherit"
-                :href="route('app.auth.logout')"
-              >
-                <q-item-section>
-                  <q-item-label
-                    ><q-icon
-                      name="logout"
-                      class="q-mr-sm"
-                    />Keluar</q-item-label
-                  >
                 </q-item-section>
               </q-item>
             </q-list>
@@ -190,7 +157,7 @@ onMounted(() => {
               <q-icon name="category" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Kategori Transaksi</q-item-label>
+              <q-item-label>Kategori</q-item-label>
             </q-item-section>
           </q-item>
           <q-item

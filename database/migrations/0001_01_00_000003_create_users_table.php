@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,10 +14,9 @@ return new class extends Migration
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
+            $table->string('email');
             $table->string('name');
             $table->string('password');
-            $table->enum('role', array_keys(User::Roles));
             $table->boolean('active')->default(false);
             $table->datetime('last_login_datetime')->nullable();
             $table->string('last_activity_description')->default('');

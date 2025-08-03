@@ -30,10 +30,10 @@ class AuthController extends Controller
         // kode dibawah ini untuk handle post
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ], [
-            'username.required' => 'ID Pengguna harus diisi.',
+            'email.required' => 'Alamat email harus diisi.',
             'password.required' => 'Kata sandi harus diisi.',
         ]);
 
@@ -43,12 +43,12 @@ class AuthController extends Controller
         }
 
         // extra validations
-        $data = $request->only(['username', 'password']);
+        $data = $request->only(['email', 'password']);
 
         if (!Auth::attempt($data, $request->has('remember'))) {
-            $validator->errors()->add('username', 'Username atau password salah!');
+            $validator->errors()->add('email', 'Alamat email atau kata sandi salah!');
         } else if (!Auth::user()->active) {
-            $validator->errors()->add('username', 'Akun anda tidak aktif. Silahkan hubungi administrator!');
+            $validator->errors()->add('email', 'Akun anda tidak aktif. Silahkan hubungi penyedia layanan!');
             $this->_logout($request);
         } else {
             /** @var \App\Models\User $user */

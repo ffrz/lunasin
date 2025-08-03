@@ -13,6 +13,10 @@ export const formatNumber = (value, locale = 'id-ID', maxDecimals = 0) => {
   }).format(number);
 };
 
+export function dateTimeFromNow(date) {
+  return dayjs(date).fromNow();
+}
+
 export function plusMinusSymbol(num) {
   return num > 0 ? '+' : '';
 }
@@ -21,7 +25,7 @@ export function formatNumberWithSymbol(num) {
   return plusMinusSymbol(num) + formatNumber(num);
 }
 
-export function formateDatetime(val, fmt = 'DD/MM/YYYY HH:mm:ss', locale = 'id-ID') {
+export function formatDatetime(val, fmt = 'DD/MM/YYYY HH:mm:ss', locale = 'id-ID') {
   let date;
   if (val instanceof Date) {
     date = val;
@@ -36,7 +40,7 @@ export function formateDatetime(val, fmt = 'DD/MM/YYYY HH:mm:ss', locale = 'id-I
   return dayjs(this.currentDate).format(fmt);
 }
 
-export function formateDate(val, fmt = 'DD/MM/YYYY', locale = 'id-ID') {
+export function formatDate(val, fmt = 'DD/MM/YYYY', locale = 'id-ID') {
   let date;
   if (val instanceof Date) {
     date = val;
@@ -51,7 +55,7 @@ export function formateDate(val, fmt = 'DD/MM/YYYY', locale = 'id-ID') {
   return dayjs(this.currentDate).format(fmt);
 }
 
-export function formateTime(val, fmt = 'HH:mm:ss', locale = 'id-ID') {
+export function formatTime(val, fmt = 'HH:mm:ss', locale = 'id-ID') {
   let date;
   if (val instanceof Date) {
     date = val;

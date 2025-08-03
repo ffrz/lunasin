@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->unsignedBigInteger('party_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->enum('type', array_keys(Transaction::Types));

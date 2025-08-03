@@ -74,7 +74,7 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 type="textarea"
                 autogrow
                 counter
-                maxlength="1000"
+                maxlength="255"
                 label="Alamat"
                 lazy-rules
                 :disable="form.processing"
@@ -86,7 +86,7 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 type="textarea"
                 autogrow
                 counter
-                maxlength="1000"
+                maxlength="255"
                 label="Catatan"
                 lazy-rules
                 :disable="form.processing"

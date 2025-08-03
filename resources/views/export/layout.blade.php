@@ -43,7 +43,7 @@
   <h4 style="margin:0;text-align:center;">{{ \App\Models\Setting::value('company_name') }}</h4>
   <h2 style="margin:0;text-align:center;">{{ $title }}</h2>
   <div style="text-align:center;">
-    <small>Dibuat oleh <b>{{ Auth::user()->username }}</b>
+    <small>Dibuat oleh <b>{{ Auth::user()->email }}</b>
       pada {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i:s') }}
       - {{ env('APP_NAME') }} v{{ env('APP_VERSION_STR') }}</small>
   </div>

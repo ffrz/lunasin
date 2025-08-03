@@ -82,7 +82,7 @@ const computedColumns = computed(() =>
                 <template v-if="$q.screen.lt.md">
                   <div>
                     <q-icon name="person" /> {{ props.row.user.name }} ({{
-                      props.row.user.username
+                      props.row.user.email
                     }})
                   </div>
                   <div>
@@ -116,7 +116,7 @@ const computedColumns = computed(() =>
                 {{ $dayjs(props.row.date).format("D MMMM YYYY") }}
               </q-td>
               <q-td key="sales" :props="props">
-                {{ props.row.user.username }}
+                {{ props.row.user.email }}
               </q-td>
               <q-td key="customer" :props="props">
                 {{ props.row.customer.name }} -
