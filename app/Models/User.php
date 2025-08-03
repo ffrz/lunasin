@@ -31,8 +31,6 @@ class User extends Authenticatable
         'active',
         'password',
         'role',
-        'work_area',
-        'parent_id',
         'last_login_datetime',
         'last_activity_description',
         'last_activity_datetime'
@@ -71,15 +69,5 @@ class User extends Authenticatable
         $this->last_activity_description = $description;
         $this->last_activity_datetime = now();
         $this->save();
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(User::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(User::class, 'parent_id');
     }
 }

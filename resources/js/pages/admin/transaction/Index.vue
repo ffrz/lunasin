@@ -9,7 +9,6 @@ import {
   create_month_options,
   create_year_options,
   plusMinusSymbol,
-  createOptions,
 } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import dayjs from "dayjs";
@@ -35,14 +34,46 @@ const months = [
   ...create_month_options(),
 ];
 
+const categories = [
+  { value: "all", label: "Semua Kategori" },
+  ...page.props.categories.map((cat) => {
+    return {
+      label: cat.name,
+      value: cat.id,
+    };
+  }),
+];
+
+const parties = [
+  { value: "all", label: "Semua Pihak" },
+  ...page.props.parties.map((party) => {
+    return {
+      label: party.name,
+      value: party.id,
+    };
+  }),
+];
+
+const types = [
+  { value: "all", label: "Semua Jenis" },
+  ...Object.entries(window.CONSTANTS.TRANSACTION_TYPES).map(
+    ([value, label]) => ({
+      value,
+      label,
+    })
+  ),
+];
+
 const filter = reactive({
   search: "",
   category_id: "all",
   party_id: "all",
+  type: "all",
   year: currentYear,
   month: currentMonth,
   ...getQueryParams(),
 });
+
 const pagination = ref({
   page: 1,
   rowsPerPage: 10,
@@ -50,6 +81,7 @@ const pagination = ref({
   sortBy: "id",
   descending: true,
 });
+
 const columns = [
   {
     name: "datetime",
@@ -92,26 +124,6 @@ const columns = [
     name: "action",
     align: "right",
   },
-];
-
-const categories = [
-  { value: "all", label: "Semua Kategori" },
-  ...page.props.categories.map((cat) => {
-    return {
-      label: cat.name,
-      value: cat.id,
-    };
-  }),
-];
-
-const parties = [
-  { value: "all", label: "Semua Pihak" },
-  ...page.props.parties.map((party) => {
-    return {
-      label: party.name,
-      value: party.id,
-    };
-  }),
 ];
 
 onMounted(() => {
@@ -218,6 +230,17 @@ watch(
             v-model="filter.category_id"
             :options="categories"
             label="Kategori"
+            dense
+            class="custom-select col-xs-6 col-sm-2"
+            map-options
+            emit-value
+            outlined
+            @update:model-value="onFilterChange"
+          />
+          <q-select
+            v-model="filter.type"
+            :options="types"
+            label="Jenis"
             dense
             class="custom-select col-xs-6 col-sm-2"
             map-options
@@ -332,6 +355,36 @@ watch(
                     transition-show="scale"
                     transition-hide="scale"
                   >
+                    <q-item
+                      clickable
+                      v-ripple
+                      v-close-popup
+                      @click.stop="
+                        router.get(
+                          route('admin.transaction.duplicate', props.row.id)
+                        )
+                      "
+                    >
+                      <q-item-section avatar>
+                        <q-icon name="file_copy" />
+                      </q-item-section>
+                      <q-item-section> Duplikat </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-ripple
+                      v-close-popup
+                      @click.stop="
+                        router.get(
+                          route('admin.transaction.edit', props.row.id)
+                        )
+                      "
+                    >
+                      <q-item-section avatar>
+                        <q-icon name="edit" />
+                      </q-item-section>
+                      <q-item-section>Edit</q-item-section>
+                    </q-item>
                     <q-list style="width: 200px">
                       <q-item
                         @click.stop="deleteItem(props.row)"
