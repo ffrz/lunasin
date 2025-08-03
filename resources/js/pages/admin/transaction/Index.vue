@@ -9,8 +9,10 @@ import {
   create_month_options,
   create_year_options,
   plusMinusSymbol,
+  createOptions,
 } from "@/helpers/utils";
 import { useQuasar } from "quasar";
+import dayjs from "dayjs";
 
 const title = "Transaksi Kas";
 const page = usePage();
@@ -36,6 +38,7 @@ const months = [
 const filter = reactive({
   search: "",
   category_id: "all",
+  party_id: "all",
   year: currentYear,
   month: currentMonth,
   ...getQueryParams(),
@@ -62,9 +65,15 @@ const columns = [
     align: "left",
   },
   {
-    name: "notes",
-    label: "Catatan",
-    field: "notes",
+    name: "type",
+    label: "Jenis",
+    field: "type",
+    align: "left",
+  },
+  {
+    name: "category",
+    label: "Kategori",
+    field: "category",
     align: "left",
   },
   {
@@ -74,16 +83,36 @@ const columns = [
     align: "right",
   },
   {
+    name: "notes",
+    label: "Keterangan",
+    field: "notes",
+    align: "left",
+  },
+  {
     name: "action",
     align: "right",
   },
 ];
 
-// const categories = [
-//   { value: "all", label: "Semua" },
-//   { value: 'null', label: "Tanpa Kategori" },
-//   ...create_options_from_operational_cost_categories(page.props.categories),
-// ];
+const categories = [
+  { value: "all", label: "Semua Kategori" },
+  ...page.props.categories.map((cat) => {
+    return {
+      label: cat.name,
+      value: cat.id,
+    };
+  }),
+];
+
+const parties = [
+  { value: "all", label: "Semua Pihak" },
+  ...page.props.parties.map((party) => {
+    return {
+      label: party.name,
+      value: party.id,
+    };
+  }),
+];
 
 onMounted(() => {
   fetchItems();
@@ -157,7 +186,7 @@ watch(
             label="Tahun"
             dense
             outlined
-            class="col-xs-6 col-sm-2"
+            class="custom-select col-xs-6 col-sm-2"
             emit-value
             map-options
             @update:model-value="onFilterChange"
@@ -168,15 +197,34 @@ watch(
             label="Bulan"
             dense
             outlined
-            class="col-xs-6 col-sm-2"
+            class="custom-select col-xs-6 col-sm-2"
             emit-value
             map-options
             :disable="filter.year === null"
             @update:model-value="onFilterChange"
           />
-          <!-- <q-select v-model="filter.category_id" :options="categories" label="Kategori" dense
-            class="custom-select col-xs-12 col-sm-3" map-options emit-value outlined
-            @update:model-value="onFilterChange" /> -->
+          <q-select
+            v-model="filter.party_id"
+            :options="parties"
+            label="Pihak"
+            dense
+            class="custom-select col-xs-6 col-sm-2"
+            map-options
+            emit-value
+            outlined
+            @update:model-value="onFilterChange"
+          />
+          <q-select
+            v-model="filter.category_id"
+            :options="categories"
+            label="Kategori"
+            dense
+            class="custom-select col-xs-6 col-sm-2"
+            map-options
+            emit-value
+            outlined
+            @update:model-value="onFilterChange"
+          />
           <q-input
             class="col"
             outlined
@@ -226,12 +274,9 @@ watch(
           <q-tr :props="props">
             <q-td key="datetime" :props="props" class="wrap-column">
               <div>
-                #{{ props.row.id }} - <q-icon name="calendar_today" />
-                {{ props.row.datetime }}
+                <q-icon v-if="!$q.screen.gt.sm" name="calendar_today" />
+                {{ dayjs(props.row.datetime).format("DD/MM/YYYY") }}
               </div>
-              <q-badge
-                ><q-icon name="category" /> {{ props.row.type_label }}</q-badge
-              >
               <template v-if="!$q.screen.gt.sm">
                 <div v-if="props.row.notes">
                   <q-icon name="notes" /> {{ props.row.notes }}
@@ -251,14 +296,25 @@ watch(
             <q-td key="party" :props="props">
               {{ props.row.party?.name }}
             </q-td>
-            <q-td key="notes" :props="props">
-              {{ props.row.notes }}
+            <q-td key="type" :props="props">
+              {{ $CONSTANTS.TRANSACTION_TYPES[props.row.type] }}
             </q-td>
-            <q-td key="amount" :props="props" style="text-align: right">
+            <q-td key="category" :props="props">
+              {{ props.row.category?.name }}
+            </q-td>
+            <q-td
+              key="amount"
+              :props="props"
+              style="text-align: right"
+              :class="props.row.amount >= 0 ? 'text-green' : 'text-red'"
+            >
               {{
                 plusMinusSymbol(props.row.amount) +
                 formatNumber(props.row.amount)
               }}
+            </q-td>
+            <q-td key="notes" :props="props">
+              {{ props.row.notes }}
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">

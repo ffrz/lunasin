@@ -25,10 +25,20 @@ class Transaction extends Model
     const Type_Adjustment = 'adjustment';
 
     const Types = [
-        self::Type_Debt => 'Pemasukan',
-        self::Type_Credit => 'Pengeluaran',
+        self::Type_Debt => 'Uang Masuk',
+        self::Type_Credit => 'Uang Keluar',
         self::Type_Adjustment => 'Penyesuaian',
     ];
+
+    public static function isPositiveTransaction($type): bool
+    {
+        return $type === self::Type_Debt; // Uang Masuk
+    }
+
+    public static function isNegativeTransaction($type): bool
+    {
+        return $type === self::Type_Credit; // Uang Keluar
+    }
 
     protected function casts(): array
     {

@@ -23,6 +23,7 @@
     window.CONSTANTS = <?= json_encode([
           'USER_ROLES' => \App\Models\User::Roles,
           'PARTY_TYPES' => \App\Models\Party::Types,
+          'TRANSACTION_TYPES' => \App\Models\Transaction::Types,
       ]) ?>;
     window.CONSTANTS.USER_ROLE_ADMIN = "{{ \App\Models\User::Role_Admin }}";
     window.CONSTANTS.USER_ROLE_USER = "{{ \App\Models\User::Role_User }}";

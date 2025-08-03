@@ -18,11 +18,12 @@ const categories = page.props.categories.map((cat) => ({
   value: cat.id,
 }));
 
-const types = [
-  { label: "Piutang (+)", value: "debt" },
-  { label: "Utang (-)", value: "credit" },
-  { label: "Penyesuaian", value: "adjustment" },
-];
+const types = Object.entries(window.CONSTANTS.TRANSACTION_TYPES).map(
+  ([value, label]) => ({
+    value,
+    label,
+  })
+);
 
 const form = useForm({
   id: page.props.data.id,
@@ -66,14 +67,14 @@ const submit = () =>
               <input type="hidden" name="id" v-model="form.id" />
               <date-time-picker
                 v-model="form.datetime"
-                label="Tanggal"
+                label="Waktu"
                 :error="!!form.errors.datetime"
                 :disable="form.processing"
               />
               <q-select
                 autofocus
                 v-model="form.type"
-                label="Jenis Transaksi"
+                label="Jenis"
                 :options="types"
                 map-options
                 emit-value
@@ -85,7 +86,7 @@ const submit = () =>
               <q-select
                 class="custom-select"
                 v-model="form.party_id"
-                label="Akun Asal"
+                :label="form.type == 'debt' ? 'Dari' : 'Ke'"
                 :options="parties"
                 map-options
                 emit-value
@@ -106,7 +107,9 @@ const submit = () =>
               />
               <LocaleNumberInput
                 v-model:modelValue="form.amount"
-                label="Jumlah"
+                :label="
+                  form.type == 'adjustment' ? 'Saldo Seharusnya' : 'Jumlah'
+                "
                 lazyRules
                 :disable="form.processing"
                 :error="!!form.errors.amount"
@@ -119,14 +122,12 @@ const submit = () =>
                 autogrow
                 counter
                 maxlength="255"
-                label="Catatan"
+                label="Keterangan"
                 lazy-rules
                 :disable="form.processing"
                 :error="!!form.errors.notes"
                 :error-message="form.errors.notes"
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Catatan harus diisi.',
-                ]"
+                :rules="[]"
               />
             </q-card-section>
             <q-card-section class="q-gutter-sm">
