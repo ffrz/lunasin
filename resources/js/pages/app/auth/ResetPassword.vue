@@ -25,7 +25,7 @@ const form = useForm({
 
 const submit = () => {
   form.clearErrors();
-  form.post(route("app.auth.store-password"), {
+  form.post(route("app.auth.reset-password"), {
     onFinish: () => form.reset("password", "password_confirmation"),
   });
 };
@@ -61,7 +61,7 @@ const submit = () => {
                 <q-input
                   square
                   v-model="form.password"
-                  type="password"
+                  :type="showPassword ? 'text' : 'password'"
                   label="Kata Sandi"
                   :error="!!form.errors.password"
                   :error-message="form.errors.password"
@@ -84,7 +84,7 @@ const submit = () => {
                 <q-input
                   square
                   v-model="form.password_confirmation"
-                  type="password"
+                  :type="showPassword ? 'text' : 'password'"
                   label="Ulangi Kata Sandi"
                   :error="!!form.errors.password_confirmation"
                   :error-message="form.errors.password_confirmation"

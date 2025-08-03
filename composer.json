@@ -12,6 +12,7 @@
         "laravel/breeze": "^2.2",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.9",
         "phpoffice/phpspreadsheet": "^4.3",
         "tightenco/ziggy": "^2.0"

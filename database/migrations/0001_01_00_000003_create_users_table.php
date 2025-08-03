@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('email');
             $table->string('name');
+            $table->string('google_id', 100)->nullable();
             $table->string('password');
             $table->boolean('active')->default(false);
             $table->datetime('last_login_datetime')->nullable();

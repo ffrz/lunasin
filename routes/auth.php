@@ -43,6 +43,9 @@ Route::middleware(NonAuthenticated::class)->group(function () {
         Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
             ->name('app.auth.reset-password-with-token');
 
+        Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+            ->name('password.reset');
+
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('app.auth.reset-password');
     });

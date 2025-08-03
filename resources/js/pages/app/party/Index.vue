@@ -7,9 +7,9 @@ import { usePageStorage } from "@/composables/usePageStorage";
 import { createOptions } from "@/helpers/options";
 import { formatNumberWithSymbol } from "@/helpers/formatter";
 
-const storage = usePageStorage("parties");
+const storage = usePageStorage("party");
 const title = "Pihak-pihak";
-const showFilter = ref(true);
+const showFilter = ref(storage.get("show-filter", false));
 const rows = ref([]);
 const loading = ref(true);
 
@@ -85,6 +85,9 @@ const computedColumns = computed(() => {
   return columns;
 });
 
+watch(showFilter, () => storage.set("show-filter", showFilter.value), {
+  deep: true,
+});
 watch(filter, () => storage.set("filter", filter), { deep: true });
 watch(pagination, () => storage.set("pagination", pagination.value), {
   deep: true,

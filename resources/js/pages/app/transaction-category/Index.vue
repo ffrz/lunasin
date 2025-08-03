@@ -1,26 +1,34 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { router } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
+import { usePageStorage } from "@/composables/usePageStorage";
 
+const storage = usePageStorage("transaction-category");
 const title = "Kategori";
 const $q = useQuasar();
-const showFilter = ref(false);
+const showFilter = ref(storage.get("show-filter", false));
 const rows = ref([]);
 const loading = ref(true);
-const filter = reactive({
-  search: "",
-  ...getQueryParams(),
-});
-const pagination = ref({
-  page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 10,
-  sortBy: "name",
-  descending: false,
-});
+const filter = reactive(
+  storage.get("filter", {
+    search: "",
+    ...getQueryParams(),
+  })
+);
+
+const pagination = ref(
+  storage.get("pagination", {
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: 10,
+    sortBy: "name",
+    descending: false,
+  })
+);
+
 const columns = [
   {
     name: "name",
@@ -69,6 +77,14 @@ const computedColumns = computed(() =>
     ? columns
     : columns.filter((col) => ["name", "action"].includes(col.name))
 );
+
+watch(showFilter, () => storage.set("show-filter", showFilter.value), {
+  deep: true,
+});
+watch(filter, () => storage.set("filter", filter), { deep: true });
+watch(pagination, () => storage.set("pagination", pagination.value), {
+  deep: true,
+});
 </script>
 
 <template>

@@ -6,11 +6,13 @@ import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import { createMonthOptions, createYearOptions } from "@/helpers/options";
 import { formatDatetime, formatNumberWithSymbol } from "@/helpers/formatter";
+import { usePageStorage } from "@/composables/usePageStorage";
 
+const storage = usePageStorage("transaction");
 const title = "Transaksi";
 const page = usePage();
 const $q = useQuasar();
-const showFilter = ref(false);
+const showFilter = ref(storage.get("show-filter", false));
 const rows = ref([]);
 const loading = ref(true);
 
@@ -58,23 +60,27 @@ const types = [
   ),
 ];
 
-const filter = reactive({
-  search: "",
-  category_id: "all",
-  party_id: "all",
-  type: "all",
-  year: currentYear,
-  month: currentMonth,
-  ...getQueryParams(),
-});
+const filter = reactive(
+  storage.get("filter", {
+    search: "",
+    category_id: "all",
+    party_id: "all",
+    type: "all",
+    year: currentYear,
+    month: currentMonth,
+    ...getQueryParams(),
+  })
+);
 
-const pagination = ref({
-  page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 10,
-  sortBy: "id",
-  descending: true,
-});
+const pagination = ref(
+  storage.get("pagination", {
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: 10,
+    sortBy: "id",
+    descending: true,
+  })
+);
 
 const columns = [
   {
@@ -162,6 +168,14 @@ watch(
     }
   }
 );
+
+watch(showFilter, () => storage.set("show-filter", showFilter.value), {
+  deep: true,
+});
+watch(filter, () => storage.set("filter", filter), { deep: true });
+watch(pagination, () => storage.set("pagination", pagination.value), {
+  deep: true,
+});
 </script>
 
 <template>
