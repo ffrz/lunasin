@@ -22,18 +22,7 @@ const showPassword = ref(false);
           <q-form class="q-gutter-md" @submit.prevent="submit">
             <q-card square bordered class="q-pa-md shadow-1">
               <q-card-section class="text-center">
-                <div class="flex justify-center">
-                  <img
-                    src="/assets/img/app-logo.png"
-                    style="
-                      object-fit: contain;
-                      height: auto;
-                      width: auto;
-                      max-height: 60px;
-                    "
-                  />
-                </div>
-                <h5 class="q-my-sm">Masuk {{ $config.APP_NAME }}</h5>
+                <h5 class="q-my-sm">Masuk</h5>
               </q-card-section>
               <q-card-section>
                 <q-input
@@ -84,15 +73,50 @@ const showPassword = ref(false);
                 />
               </q-card-section>
               <q-card-actions>
-                <q-btn
-                  icon="login"
-                  type="submit"
-                  color="primary"
-                  class="full-width"
-                  label="Masuk"
-                  :disable="form.processing"
-                />
+                <div class="full-width">
+                  <q-btn
+                    icon="login"
+                    type="submit"
+                    color="primary"
+                    class="full-width"
+                    label="Login"
+                    :disable="form.processing"
+                  />
+                </div>
               </q-card-actions>
+              <q-card-section
+                class="flex justify-center items-center q-px-sm q-py-xs"
+              >
+                <hr class="col line" />
+                <span class="col-auto q-mx-sm">Atau</span>
+                <hr class="col line" />
+              </q-card-section>
+              <q-card-actions>
+                <div class="full-width">
+                  <q-btn
+                    icon="login"
+                    href="/auth/google/redirect"
+                    color="accent"
+                    class="full-width"
+                    label="Gunakan akun Google"
+                    :disable="form.processing"
+                  />
+                </div>
+              </q-card-actions>
+              <q-card-section class="text-center q-pa-none q-mt-md">
+                <p class="q-my-xs text-grey-7">
+                  Belum punya akun?
+                  <i-link :href="route('app.auth.register-options')"
+                    >Daftar</i-link
+                  >
+                </p>
+                <p class="q-my-xs text-grey-7">
+                  Lupa kata sandi?
+                  <i-link :href="route('app.auth.forgot-password')"
+                    >Atur ulang</i-link
+                  >
+                </p>
+              </q-card-section>
             </q-card>
           </q-form>
         </div>

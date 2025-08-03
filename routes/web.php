@@ -22,15 +22,15 @@ Route::get('/test', function () {
 
 Route::middleware(NonAuthenticated::class)->group(function () {
     Route::redirect('/', 'app/auth/login', 301);
-    Route::prefix('/app/auth')->group(function () {
-        Route::match(['get', 'post'], 'login', [AuthController::class, 'login'])->name('app.auth.login');
-        Route::match(['get', 'post'], 'register', [AuthController::class, 'register'])->name('app.auth.register');
-        Route::match(['get', 'post'], 'forgot-password', [AuthController::class, 'forgotPassword'])->name('app.auth.forgot-password');
-    });
+    // Route::prefix('/app/auth')->group(function () {
+    //     Route::match(['get', 'post'], 'login', [AuthController::class, 'login'])->name('app.auth.login');
+    //     Route::match(['get', 'post'], 'register', [AuthController::class, 'register'])->name('app.auth.register');
+    //     Route::match(['get', 'post'], 'forgot-password', [AuthController::class, 'forgotPassword'])->name('app.auth.forgot-password');
+    // });
 });
 
 Route::middleware([Auth::class])->group(function () {
-    Route::match(['get', 'post'], 'app/auth/logout', [AuthController::class, 'logout'])->name('app.auth.logout');
+    // Route::match(['get', 'post'], 'app/auth/logout', [AuthController::class, 'logout'])->name('app.auth.logout');
 
     Route::prefix('admin')->group(function () {
         Route::redirect('', 'app/dashboard', 301);
@@ -92,3 +92,5 @@ Route::middleware([Auth::class])->group(function () {
         });
     });
 });
+
+require_once __DIR__ . '/auth.php';
