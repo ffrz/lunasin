@@ -17,13 +17,13 @@ class UserController extends Controller
 {
     public function index()
     {
-        return inertia('admin/user/Index');
+        return inertia('app/user/Index');
     }
 
     public function detail($id = 0)
     {
         // tambahkan jumlah client yang ditangani oleh user ini
-        return inertia('admin/user/Detail', [
+        return inertia('app/user/Detail', [
             'data' => User::findOrFail($id),
         ]);
     }
@@ -65,7 +65,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->id = null;
         $user->created_at = null;
-        return inertia('admin/user/Editor', [
+        return inertia('app/user/Editor', [
             'data' => $user
         ]);
     }
@@ -80,10 +80,10 @@ class UserController extends Controller
             $user->active = true;
             $user->admin = true;
         } else if ($user == Auth::user()) {
-            return redirect(route('admin.user.index'))->with('warning', 'TIdak dapat mengubah akun anda sendiri.');
+            return redirect(route('app.user.index'))->with('warning', 'TIdak dapat mengubah akun anda sendiri.');
         }
 
-        return inertia('admin/user/Editor', [
+        return inertia('app/user/Editor', [
             'data' => $user,
         ]);
     }
@@ -127,7 +127,7 @@ class UserController extends Controller
 
         $message = "Pengguna {$user->username} telah " . ($request->id ? 'diperbarui' : 'ditambahkan') . '.';
 
-        return redirect(route('admin.user.index'))->with('success', $message);
+        return redirect(route('app.user.index'))->with('success', $message);
     }
 
     public function delete($id)

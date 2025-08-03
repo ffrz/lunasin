@@ -12,25 +12,25 @@ export default defineConfig({
           vendor2: ['vue-echarts'],
           vendor3: ['echarts'],
           // components: [
-          //   '/resources/js/pages/admin/auth/Login.vue',
-          //   '/resources/js/pages/admin/auth/Register.vue',
+          //   '/resources/js/pages/app/auth/Login.vue',
+          //   '/resources/js/pages/app/auth/Register.vue',
           // ],
         },
       },
     },
   },
-    plugins: [
-        vue({
-            template: { transformAssetUrls },
-        }),
-        // @quasar/plugin-vite options list:
-        // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
-        quasar({
-            sassVariables: "/resources/css/quasar-variables.sass",
-        }),
-        laravel({
-            input: ["resources/css/app.css", "resources/js/app.js"],
-            refresh: true,
-        }),
-    ],
+  plugins: [
+    vue({
+      template: { transformAssetUrls },
+    }),
+    // @quasar/plugin-vite options list:
+    // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
+    quasar({
+      sassVariables: "/resources/css/quasar-variables.sass",
+    }),
+    laravel({
+      input: ["resources/css/app.css", "resources/js/app.js"],
+      refresh: true,
+    }),
+  ],
 });

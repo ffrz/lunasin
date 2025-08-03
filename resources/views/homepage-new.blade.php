@@ -33,7 +33,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="{{ route('admin.auth.login') }}">Masuk</a>
+      <a class="btn-getstarted" href="{{ route('app.auth.login') }}">Masuk</a>
 
     </div>
   </header>

@@ -112,8 +112,8 @@ onMounted(() => {
                 class="subnav"
                 clickable
                 v-ripple
-                :active="$page.url.startsWith('/admin/settings/profile')"
-                @click="router.get(route('admin.profile.edit'))"
+                :active="$page.url.startsWith('/app/settings/profile')"
+                @click="router.get(route('app.profile.edit'))"
               >
                 <q-item-section>
                   <q-item-label
@@ -127,7 +127,7 @@ onMounted(() => {
                 v-close-popup
                 v-ripple
                 style="color: inherit"
-                :href="route('admin.auth.logout')"
+                :href="route('app.auth.logout')"
               >
                 <q-item-section>
                   <q-item-label
@@ -156,8 +156,8 @@ onMounted(() => {
           <q-item
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/dashboard')"
-            @click="router.get(route('admin.dashboard'))"
+            :active="$page.url.startsWith('/app/dashboard')"
+            @click="router.get(route('app.dashboard'))"
           >
             <q-item-section avatar>
               <q-icon name="dashboard" />
@@ -170,8 +170,8 @@ onMounted(() => {
           <q-item
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/transactions')"
-            @click="router.get(route('admin.transaction.index'))"
+            :active="$page.url.startsWith('/app/transactions')"
+            @click="router.get(route('app.transaction.index'))"
           >
             <q-item-section avatar>
               <q-icon name="sync_alt" />
@@ -183,8 +183,8 @@ onMounted(() => {
           <q-item
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/transaction-categories')"
-            @click="router.get(route('admin.transaction-category.index'))"
+            :active="$page.url.startsWith('/app/transaction-categories')"
+            @click="router.get(route('app.transaction-category.index'))"
           >
             <q-item-section avatar>
               <q-icon name="category" />
@@ -196,8 +196,8 @@ onMounted(() => {
           <q-item
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/parties')"
-            @click="router.get(route('admin.party.index'))"
+            :active="$page.url.startsWith('/app/parties')"
+            @click="router.get(route('app.party.index'))"
           >
             <q-item-section avatar>
               <q-icon name="partner_exchange" />
@@ -210,8 +210,8 @@ onMounted(() => {
           <!-- <q-item
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/settings/users')"
-            @click="router.get(route('admin.user.index'))"
+            :active="$page.url.startsWith('/app/settings/users')"
+            @click="router.get(route('app.user.index'))"
           >
             <q-item-section avatar>
               <q-icon name="group" />
@@ -223,8 +223,8 @@ onMounted(() => {
           <q-item
             clickable
             v-ripple
-            :active="$page.url.startsWith('/admin/settings/profile')"
-            @click="router.get(route('admin.profile.edit'))"
+            :active="$page.url.startsWith('/app/settings/profile')"
+            @click="router.get(route('app.profile.edit'))"
           >
             <q-item-section avatar>
               <q-icon name="manage_accounts" />
@@ -239,7 +239,7 @@ onMounted(() => {
             v-close-popup
             v-ripple
             style="color: inherit"
-            :href="route('admin.auth.logout')"
+            :href="route('app.auth.logout')"
           >
             <q-item-section>
               <q-item-label
