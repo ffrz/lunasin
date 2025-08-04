@@ -32,15 +32,15 @@
 
 <body>
   @php
-    $logoPath = public_path(\App\Models\Setting::value('company_logo_path') ?? '');
-    $logoRelative = \App\Models\Setting::value('company_logo_path');
+    $logoPath = public_path('assets/img/app-logo.png');
+    $logoRelative = 'assets/img/app-logo.png';
   @endphp
   @if ($logoRelative && file_exists($logoPath))
     <div class="header-logo" style="text-align: center;">
       <img src="{{ $logoRelative }}" alt="Logo Perusahaan" style="width: 24px; height: auto;  margin: 0 auto;" />
     </div>
   @endif
-  <h4 style="margin:0;text-align:center;">{{ \App\Models\Setting::value('company_name') }}</h4>
+  <h4 style="margin:0;text-align:center;">{{ env('APP_NAME') }}</h4>
   <h2 style="margin:0;text-align:center;">{{ $title }}</h2>
   <div style="text-align:center;">
     <small>Dibuat oleh <b>{{ Auth::user()->email }}</b>

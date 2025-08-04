@@ -49,6 +49,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [TransactionController::class, 'detail'])->name('app.transaction.detail');
             Route::post('save', [TransactionController::class, 'save'])->name('app.transaction.save');
             Route::post('delete/{id}', [TransactionController::class, 'delete'])->name('app.transaction.delete');
+            Route::get('export', [TransactionController::class, 'export'])->name('app.transaction.export');
         });
 
         Route::prefix('transaction-categories')->group(function () {
@@ -59,6 +60,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('edit/{id}', [TransactionCategoryController::class, 'editor'])->name('app.transaction-category.edit');
             Route::post('save', [TransactionCategoryController::class, 'save'])->name('app.transaction-category.save');
             Route::post('delete/{id}', [TransactionCategoryController::class, 'delete'])->name('app.transaction-category.delete');
+            Route::get('export', [TransactionCategoryController::class, 'export'])->name('app.transaction-category.export');
         });
 
         Route::prefix('parties')->group(function () {

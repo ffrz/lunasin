@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Party;
 use App\Models\Transaction;
 use App\Models\TransactionCategory;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionController extends Controller
 {
@@ -189,5 +192,61 @@ class TransactionController extends Controller
                 'message' => 'Gagal menghapus transaksi.'
             ], 500);
         }
+    }
+
+    /**
+     * Mengekspor daftar kategori ke dalam format PDF atau Excel.
+     */
+    public function export(Request $request)
+    {
+        $items = Transaction::orderBy('datetime', 'desc')->get();
+        $title = 'Daftar Transaksi';
+        $filename = $title . ' - ' . env('APP_NAME') . Carbon::now()->format('dmY_His');
+
+        if ($request->get('format') == 'pdf') {
+            $pdf = Pdf::loadView('export.transaction-list-pdf', compact('items', 'title'));
+            return $pdf->download($filename . '.pdf');
+        }
+
+        if ($request->get('format') == 'excel') {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Tambahkan header
+            $sheet->setCellValue('A1', 'ID');
+            $sheet->setCellValue('B1', 'Waktu');
+            $sheet->setCellValue('C1', 'Pihak');
+            $sheet->setCellValue('D1', 'Jenis');
+            $sheet->setCellValue('E1', 'Kategori');
+            $sheet->setCellValue('F1', 'Jumlah');
+            $sheet->setCellValue('G1', 'Catatan');
+
+            // Tambahkan data ke Excel
+            $row = 2;
+            foreach ($items as $item) {
+                $sheet->setCellValue('A' . $row, $item->id);
+                $sheet->setCellValue('B' . $row, $item->datetime);
+                $sheet->setCellValue('C' . $row, $item->party?->name);
+                $sheet->setCellValue('D' . $row, Transaction::Types[$item->type]);
+                $sheet->setCellValue('E' . $row, $item->category?->name);
+                $sheet->setCellValue('F' . $row, $item->amount);
+                $sheet->setCellValue('G' . $row, $item->notes);
+                $row++;
+            }
+
+            // Kirim ke memori tanpa menyimpan file
+            $response = new StreamedResponse(function () use ($spreadsheet) {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save('php://output');
+            });
+
+            // Atur header response untuk download
+            $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '.xlsx"');
+
+            return $response;
+        }
+
+        return abort(400, 'Format tidak didukung');
     }
 }
