@@ -1,57 +1,88 @@
-# Shiftech CRM – Sistem Manajemen CRM dan Pelacakan Kunjungan Tim Marketing
-
-Shiftech CRM adalah aplikasi berbasis web untuk membantu tim salesman dalam mengelola client, menjadwalkan dan merekam interaksi, serta memonitor progress pemasaran secara terstruktur dan terukur.
-
-Sistem ini memudahkan manajemen dalam mengawasi aktivitas salesman, melihat performa tiap salesman, dan menganalisis status prospek hingga closing.
+# 🧾 Lunasin
+**Lunasin** adalah aplikasi web berbasis **Laravel + Inertia.js + Quasar** untuk **manajemen utang-piutang pribadi**.  
+Aplikasi ini membantu pengguna mencatat, mengelola, dan menganalisis utang-piutang dengan mudah, cepat, dan rapi.  
 
 ---
 
-## 🚀 Fitur Utama
+## ✨ Fitur Utama
+- **Multi Tenant** → setiap user memiliki workspace/lingkungan terpisah.  
+- **Login via Google** (OAuth).  
+- **Dashboard** → ringkasan utang, piutang, dan saldo bersih.  
+- **Pihak** → daftar orang/entitas yang terkait dalam transaksi.  
+- **Transaksi** → pencatatan utang, piutang, pembayaran, pelunasan.  
+- **Kategori Transaksi** → klasifikasi transaksi sesuai kebutuhan (misal: pribadi, usaha, pinjaman keluarga).  
+- **Laporan** → ringkasan utang-piutang berdasarkan pihak, kategori, atau periode.  
 
-- Manajemen Data Client
-- Penugasan Client kepada Salesman (Users)  
-- Penjadwalan dan Pencatatan Interaksi Sales (Interactions)  
-- Tracking Status Progress Prospek (pipeline status)  (belum diimplementasikan)
-- Dashboard performa tim salesman (kunjungan, konversi, follow-up)  (belum diimplementasikan)
-- Laporan detail interaksi per salesman (belum diimplementasikan)
-- Analisis status pelanggan dan sumber prospek (butuh review)
-- Notifikasi reminder follow-up pelanggan (butuh review)
-
----
-
-## 💡 Tech Stack
-
-- **Backend**: Laravel 11 (PHP)  
-- **Frontend**: Vue.js 3 + Quasar 2
-- **Database**: MySQL  
-- **Charting & Dashboard**: ECharts / Chart.js  
+> Catatan: Modul **User** hanya digunakan untuk manajemen internal sistem (autentikasi & multi-tenant), bukan di dalam tenant.
 
 ---
 
-## 📈 Dashboard dan Laporan
-
-- **Dashboard Marketer**  
-  - Jumlah kunjungan hari ini / minggu / bulan  
-  - Status interaksi pelanggan
-  - Grafik performa per salesman  
-
-- **Laporan Kunjungan**  
-  - Daftar kunjungan per salesman dengan status hasil kunjungan (belum diimplementasikan) 
-  - Rangkuman aktivitas follow-up dan jadwal berikutnya (rencana)  
-
-- **Laporan Pipeline**  
-  - Visualisasi funnel penjualan dari prospek ke closing  
-  - Statistik sumber pelanggan dan konversi  
+## 🛠️ Tech Stack
+- **Backend**: [Laravel](https://laravel.com/)  
+- **Frontend**: [Inertia.js](https://inertiajs.com/) + [Quasar Framework](https://quasar.dev/)  
+- **Database**: MySQL / PostgreSQL (opsional)  
+- **Authentication**: Laravel Socialite (Google OAuth)  
 
 ---
 
-## 🚀 Cara Instalasi
+## 🚀 Instalasi & Setup
+### 1. Clone Repository
+```bash
+git clone https://github.com/username/lunasin.git
+cd lunasin
+```
+### 2. Install Dependency Backend
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+### 3. Install Dependency Frontend
+```bash
+3. Install Dependency Frontend
+```bash
+npm install
+```
+### 4. Konfigurasi .env
+```env
+APP_NAME=Lunasin
+APP_URL=http://localhost:8000
 
-1. Clone repository  
-2. Jalankan `composer install`  
-3. Setup `.env` dan konfigurasi database  
-4. Jalankan migrasi dan seeder:  
-   ```bash
-   php artisan migrate --seed
-5. Jalankan `npm install` untuk instalasi dependensi client side
-6. Jalankan `npm run dev` untuk memulai vite
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=lunasin
+DB_USERNAME=root
+DB_PASSWORD=
+
+GOOGLE_CLIENT_ID=xxxx
+GOOGLE_CLIENT_SECRET=xxxx
+GOOGLE_REDIRECT=http://localhost:8000/auth/google/callback
+```
+### 5. Migrasi Database
+```bash
+php artisan migrate --seed
+```
+### 6. Jalankan Aplikasi
+Backend:
+```code
+php artisan serve
+```
+Frontend (Quasar dev):
+```bash
+npm run dev
+```
+Akses aplikasi di http://localhost:8000.
+
+📊 Roadmap
+* Export laporan ke PDF/Excel
+* Notifikasi pelunasan (Pending review)
+* Integrasi WhatsApp reminder (Pending review)
+* Mobile-friendly PWA (Pending review)
+
+### 👨‍💻 Kontributor
+- Fahmi Fauzi Rahman @ffrz
+
+### 📜 Lisensi
+Project ini bersifat internal/private (belum open source).
+Lisensi dapat disesuaikan jika dibuka untuk publik.
