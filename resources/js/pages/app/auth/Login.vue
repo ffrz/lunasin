@@ -21,10 +21,10 @@ const showPassword = ref(false);
         <div class="row">
           <q-form class="q-gutter-md" @submit.prevent="submit">
             <q-card square bordered class="q-pa-md shadow-1">
-              <q-card-section class="text-center">
-                <h5 class="q-my-sm">Masuk</h5>
+              <q-card-section class="text-center q-my-none q-py-sm">
+                <h6 class="q-my-xs">Masuk</h6>
               </q-card-section>
-              <q-card-section>
+              <q-card-section class="q-mt-none q-pt-none">
                 <q-input
                   v-model.trim="form.email"
                   label="Email"
@@ -36,6 +36,7 @@ const showPassword = ref(false);
                   :rules="[
                     (val) => (val && val.length > 0) || 'Masukkan alamat email',
                   ]"
+                  hide-bottom-space
                 >
                   <template v-slot:append>
                     <q-icon name="person" />
@@ -53,6 +54,7 @@ const showPassword = ref(false);
                   :rules="[
                     (val) => (val && val.length > 0) || 'Masukkan kata sandi',
                   ]"
+                  hide-bottom-space
                 >
                   <template v-slot:append>
                     <q-btn
@@ -70,6 +72,7 @@ const showPassword = ref(false);
                   v-model="form.remember"
                   :disable="form.processing"
                   label="Ingat saya di perangkat ini"
+                  
                 />
               </q-card-section>
               <q-card-actions>
