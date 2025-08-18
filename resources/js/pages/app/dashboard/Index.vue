@@ -50,30 +50,43 @@ const onFilterChange = () => {
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
-          <q-select
-            class="custom-select col-12"
-            style="min-width: 150px"
-            v-model="selected_period"
-            :options="period_options"
-            label="Periode"
-            dense
-            map-options
-            emit-value
-            outlined
-            @update:model-value="onFilterChange"
-          />
+          <div class="col-12 col-md-3">
+            <q-select
+              class="custom-select"
+              style="min-width: 150px"
+              v-model="selected_period"
+              :options="period_options"
+              label="Periode"
+              dense
+              map-options
+              emit-value
+              outlined
+              @update:model-value="onFilterChange"
+            />
+          </div>
         </div>
       </q-toolbar>
     </template>
     <div class="q-pa-sm">
       <div>
         <div class="text-subtitle1 text-bold text-grey-8">Statistik Aktual</div>
-        <p class="text-grey-8">Belum Tersedia</p>
-        <!-- <current-stat-cards class="q-py-none" /> -->
+        <current-stat-cards
+          :stats="page.props.current_stats"
+          class="q-py-none"
+        />
         <div class="row q-col-gutter-sm q-pt-sm">
-          <!-- <recent-interactions-card class="q-my-xs" />
-          <recent-customers-card class="q-my-xs" />
-          <recent-closings-card class="q-my-xs" /> -->
+          <recent-interactions-card
+            :items="page.props.recent_interactions"
+            class="col-12 col-md-4"
+          />
+          <recent-customers-card
+            :items="page.props.recent_customers"
+            class="col-12 col-md-4"
+          />
+          <recent-closings-card
+            :items="page.props.recent_closings"
+            class="col-12 col-md-4"
+          />
         </div>
       </div>
       <div class="q-pt-md">
@@ -81,8 +94,7 @@ const onFilterChange = () => {
           Statistik
           {{ period_options.find((a) => a.value == selected_period).label }}
         </div>
-        <p class="text-grey-8">Belum Tersedia</p>
-        <!-- <stat-cards class="q-py-none" /> -->
+        <stat-cards :stats="page.props.period_stats" class="q-py-none" />
       </div>
       <div>
         <!-- <chart-card class="q-py-none q-pt-lg" /> -->
