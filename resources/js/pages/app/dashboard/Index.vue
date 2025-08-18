@@ -14,19 +14,18 @@ const dashboardData = ref(page.props.data);
 
 const title = "Dashboard";
 const showFilter = ref(false);
-const selectedMonth = ref(getQueryParams()["month"] ?? "this_month");
-const monthOptions = ref([
-  { value: "this_month", label: "Bulan Ini" },
-  { value: "this_week", label: "Minggu Ini" },
-  { value: "prev_week", label: "Minggu Lalu" },
-  { value: "prev_month", label: "1 Bulan Sebelumnya" },
-  { value: "prev_2month", label: "2 Bulan Sebelumnya" },
-  { value: "prev_3month", label: "3 Bulan Sebelumnya" },
-  // { value: "custom", label: "Custom" },
+const selectedYear = ref(getQueryParams()["year"] ?? "this_year");
+const yearOptions = ref([
+  { value: "this_year", label: "Tahun Ini" },
+  { value: "prev_year", label: "Tahun Lalu" },
+  { value: "prev_2_year", label: "2 Tahun Lalu" },
+  { value: "prev_3_year", label: "3 Tahun Lalu" },
+  { value: "prev_4_year", label: "4 Tahun Lalu" },
+  { value: "prev_5_year", label: "5 Tahun Lalu" },
 ]);
 
 const onFilterChange = () => {
-  router.visit(route("app.dashboard", { month: selectedMonth.value }));
+  router.visit(route("app.dashboard", { year: selectedYear.value }));
 };
 </script>
 
@@ -49,9 +48,9 @@ const onFilterChange = () => {
           <q-select
             class="custom-select col-12"
             style="min-width: 150px"
-            v-model="selectedMonth"
-            :options="monthOptions"
-            label="Bulan"
+            v-model="selectedYear"
+            :options="yearOptions"
+            label="Tahun"
             dense
             map-options
             emit-value
@@ -63,23 +62,29 @@ const onFilterChange = () => {
     </template>
 
     <div class="q-pa-sm">
+      <div class="text-caption text-bold text-grey-8 q-mb-sm text-center">
+        Statistik Aktual
+      </div>
       <div class="q-pa-none">
         <!-- Menggunakan komponen SummaryCards -->
         <SummaryCards :summary="dashboardData.summary" />
       </div>
+      <!-- Menggunakan komponen TopLists -->
+      <TopCards
+        :top-debtors="dashboardData.topDebtors"
+        :top-creditors="dashboardData.topCreditors"
+      />
 
+      <div class="text-caption text-bold text-grey-8 q-mb-sm text-center">
+        Statistik
+        {{ yearOptions.find((o) => o.value === selectedYear)?.label }}
+      </div>
       <!-- Menggunakan komponen ChartComponent -->
       <ChartCards
         :monthly-transactions="dashboardData.monthlyTransactions"
         :transaction-category-distribution="
           dashboardData.transactionCategoryDistribution
         "
-      />
-
-      <!-- Menggunakan komponen TopLists -->
-      <TopCards
-        :top-debtors="dashboardData.topDebtors"
-        :top-creditors="dashboardData.topCreditors"
       />
     </div>
   </authenticated-layout>

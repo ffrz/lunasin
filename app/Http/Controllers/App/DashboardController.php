@@ -38,38 +38,38 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $selectedPeriod = $request->query('month', 'this_month');
+        $selectedPeriod = $request->query('year', 'this_year');
         $startDate = null;
         $endDate = null;
 
         switch ($selectedPeriod) {
-            case 'this_month':
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
+            case 'this_year':
+                $startDate = Carbon::now()->startOfYear();
+                $endDate = Carbon::now()->endOfYear();
                 break;
-            case 'this_week':
-                $startDate = Carbon::now()->startOfWeek(Carbon::MONDAY);
-                $endDate = Carbon::now()->endOfWeek(Carbon::SUNDAY);
+            case 'prev_year':
+                $startDate = Carbon::now()->subYear(1)->startOfYear();
+                $endDate = Carbon::now()->subYear(1)->endOfYear();
                 break;
-            case 'prev_week':
-                $startDate = Carbon::now()->subWeek()->startOfWeek(Carbon::MONDAY);
-                $endDate = Carbon::now()->subWeek()->endOfWeek(Carbon::SUNDAY);
+            case 'prev_2_year':
+                $startDate = Carbon::now()->subYears(2)->startOfYear();
+                $endDate = Carbon::now()->subYears(2)->endOfYear();
                 break;
-            case 'prev_month':
-                $startDate = Carbon::now()->subMonth()->startOfMonth();
-                $endDate = Carbon::now()->subMonth()->endOfMonth();
+            case 'prev_3_year':
+                $startDate = Carbon::now()->subYears(3)->startOfYear();
+                $endDate = Carbon::now()->subYears(3)->endOfYear();
                 break;
-            case 'prev_2month':
-                $startDate = Carbon::now()->subMonths(2)->startOfMonth();
-                $endDate = Carbon::now()->subMonths(2)->endOfMonth();
+            case 'prev_4_year':
+                $startDate = Carbon::now()->subYears(4)->startOfYear();
+                $endDate = Carbon::now()->subYears(4)->endOfYear();
                 break;
-            case 'prev_3month':
-                $startDate = Carbon::now()->subMonths(3)->startOfMonth();
-                $endDate = Carbon::now()->subMonths(3)->endOfMonth();
+            case 'prev_5_year':
+                $startDate = Carbon::now()->subYears(5)->startOfYear();
+                $endDate = Carbon::now()->subYears(5)->endOfYear();
                 break;
             default:
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
+                $startDate = Carbon::now()->startOfYear();
+                $endDate = Carbon::now()->endOfYear();
                 break;
         }
 
@@ -94,23 +94,22 @@ class DashboardController extends Controller
             ->limit(5)
             ->get(['name', 'balance as value']);
 
-        $chartStartDate = Carbon::now()->subMonths(5)->startOfMonth();
-        $chartEndDate = Carbon::now()->endOfMonth();
-
-        $monthlyTransactionsData = Transaction::selectRaw('DATE_FORMAT(datetime, "%b") as month_label, SUM(amount) as total_amount')
-            ->whereBetween('datetime', [$chartStartDate, $chartEndDate])
-            ->groupBy('month_label')
-            ->orderByRaw('MIN(datetime)')
+        // chart Januari - Desember pada tahun terpilih
+        $monthlyTransactionsData = Transaction::selectRaw('MONTH(datetime) as month_number, SUM(amount) as total_amount')
+            ->whereBetween('datetime', [$startDate, $endDate])
+            ->groupBy('month_number')
+            ->orderBy('month_number')
             ->get();
 
         $allMonths = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $monthKey = Carbon::now()->subMonths($i)->startOfMonth()->format('M');
+        for ($i = 1; $i <= 12; $i++) {
+            $monthKey = Carbon::createFromDate(null, $i, 1)->format('M');
             $allMonths[$monthKey] = 0;
         }
 
         foreach ($monthlyTransactionsData as $item) {
-            $allMonths[$item->month_label] = -$item->total_amount;
+            $monthKey = Carbon::createFromDate(null, $item->month_number, 1)->format('M');
+            $allMonths[$monthKey] = -$item->total_amount;
         }
 
         $monthlyLabels = array_keys($allMonths);
@@ -118,7 +117,7 @@ class DashboardController extends Controller
 
         $transactionCategoryDistribution = $transactionsInPeriodQuery->clone()
             ->join('transaction_categories', 'transactions.category_id', '=', 'transaction_categories.id')
-            ->selectRaw('transaction_categories.name, COUNT(transactions.id) as value')
+            ->selectRaw('transaction_categories.name, ABS(SUM(transactions.amount)) as value')
             ->groupBy('transaction_categories.name')
             ->get();
 
@@ -141,9 +140,10 @@ class DashboardController extends Controller
 
         return inertia('app/dashboard/Index', [
             'data' => $dashboardData,
-            'month' => $request->query('month', 'this_month'),
+            'year' => $request->query('year', 'this_year'),
         ]);
     }
+
 
     /**
      * This method exists here for testing purpose only.

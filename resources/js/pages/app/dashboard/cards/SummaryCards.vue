@@ -64,9 +64,6 @@ const summaryItems = computed(() => [
 
 <template>
   <div class="q-pb-sm">
-    <div class="text-h6 text-bold text-grey-8 q-mb-sm text-center">
-      Statistik Ringkasan
-    </div>
     <div class="row q-col-gutter-sm">
       <div
         v-for="(item, index) in summaryItems"
