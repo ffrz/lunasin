@@ -1,7 +1,7 @@
 <script setup>
 import {
   dateTimeFromNow,
-  formatDatetime,
+  formatDateTime,
   formatNumberWithSymbol,
 } from "@/helpers/formatter";
 import { usePage } from "@inertiajs/vue3";
@@ -56,7 +56,7 @@ const page = usePage();
         <td>:</td>
         <td>
           {{ dateTimeFromNow(page.props.data.created_datetime) }} -
-          {{ formatDatetime(page.props.data.created_datetime) }}
+          {{ formatDateTime(page.props.data.created_datetime) }}
           <!-- <template v-if="page.props.data.created_by_user">
             oleh
             <my-link
@@ -76,7 +76,7 @@ const page = usePage();
         <td>:</td>
         <td>
           {{ dateTimeFromNow(page.props.data.updated_datetime) }} -
-          {{ formatDatetime(page.props.data.updated_datetime) }}
+          {{ formatDateTime(page.props.data.updated_datetime) }}
           <!-- <template v-if="page.props.data.updated_by_user">
             oleh
             <my-link

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-export const formatNumber = (value, locale = 'id-ID', maxDecimals = 0) => {
+export const formatNumber = (value, maxDecimals = 0, locale = 'id-ID') => {
   let number = value;
 
   if (number === null || number === undefined || isNaN(number)) {
@@ -25,7 +25,7 @@ export function formatNumberWithSymbol(num) {
   return plusMinusSymbol(num) + formatNumber(num);
 }
 
-export function formatDatetime(val, fmt = 'DD/MM/YYYY HH:mm:ss', locale = 'id-ID') {
+export function formatDateTime(val, fmt = 'DD/MM/YYYY HH:mm:ss', locale = 'id-ID') {
   let date;
   if (val instanceof Date) {
     date = val;
@@ -37,35 +37,13 @@ export function formatDatetime(val, fmt = 'DD/MM/YYYY HH:mm:ss', locale = 'id-ID
     throw new Error('val must be string or Date object');
   }
 
-  return dayjs(this.currentDate).format(fmt);
+  return dayjs(val).format(fmt);
 }
 
 export function formatDate(val, fmt = 'DD/MM/YYYY', locale = 'id-ID') {
-  let date;
-  if (val instanceof Date) {
-    date = val;
-  }
-  else if (typeof (val) === 'string') {
-    date = new Date(val);
-  }
-  else {
-    throw new Error('val must be string or Date object');
-  }
-
-  return dayjs(this.currentDate).format(fmt);
+  return formatDateTime(val, fmt, locale);
 }
 
 export function formatTime(val, fmt = 'HH:mm:ss', locale = 'id-ID') {
-  let date;
-  if (val instanceof Date) {
-    date = val;
-  }
-  else if (typeof (val) === 'string') {
-    date = new Date(val);
-  }
-  else {
-    throw new Error('val must be string or Date object');
-  }
-
-  return dayjs(this.currentDate).format(fmt);
+  return formatDateTime(val, fmt, locale);
 }

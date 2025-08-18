@@ -5,7 +5,7 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import { createMonthOptions, createYearOptions } from "@/helpers/options";
-import { formatDatetime, formatNumberWithSymbol } from "@/helpers/formatter";
+import { formatDateTime, formatNumberWithSymbol } from "@/helpers/formatter";
 import { usePageStorage } from "@/composables/usePageStorage";
 
 const storage = usePageStorage("transaction");
@@ -345,7 +345,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
             <q-td key="datetime" :props="props" class="wrap-column">
               <div>
                 <q-icon v-if="!$q.screen.gt.sm" name="calendar_today" />
-                {{ formatDatetime(props.row.datetime) }}
+                {{ formatDateTime(props.row.datetime) }}
               </div>
               <template v-if="!$q.screen.gt.sm">
                 <div v-if="props.row.party">
