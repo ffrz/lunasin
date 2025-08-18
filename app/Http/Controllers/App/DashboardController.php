@@ -29,110 +29,137 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
+use App\Models\Party;
+use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // $period = $request->get('period', 'this_month');
-        // [$start_date, $end_date] = resolve_period($period);
+        $selectedPeriod = $request->query('month', 'this_month'); // Menggunakan 'month' sebagai parameter umum untuk periode
+        $currentUserId = auth()->id(); // Pastikan ID user yang sedang login tersedia
 
-        // $labels = [];
-        // $count_interactions = [];
-        // $count_closings = [];
-        // $count_new_customers = [];
-        // $total_closings = [];
+        $startDate = null;
+        $endDate = null;
 
-        // $start = $start_date ? Carbon::parse($start_date) : Carbon::createFromDate(2000, 1, 1);
-        // $end = $end_date ? Carbon::parse($end_date) : Carbon::now();
+        // Menentukan rentang tanggal berdasarkan opsi filter yang dipilih
+        switch ($selectedPeriod) {
+            case 'this_month':
+                $startDate = Carbon::now()->startOfMonth();
+                $endDate = Carbon::now()->endOfMonth();
+                break;
+            case 'this_week':
+                // Perhatikan: Carbon::MONDAY atau Carbon::SUNDAY tergantung definisi awal minggu Anda
+                $startDate = Carbon::now()->startOfWeek(Carbon::MONDAY);
+                $endDate = Carbon::now()->endOfWeek(Carbon::SUNDAY);
+                break;
+            case 'prev_week':
+                $startDate = Carbon::now()->subWeek()->startOfWeek(Carbon::MONDAY);
+                $endDate = Carbon::now()->subWeek()->endOfWeek(Carbon::SUNDAY);
+                break;
+            case 'prev_month':
+                $startDate = Carbon::now()->subMonth()->startOfMonth();
+                $endDate = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'prev_2month':
+                $startDate = Carbon::now()->subMonths(2)->startOfMonth();
+                $endDate = Carbon::now()->subMonths(2)->endOfMonth();
+                break;
+            case 'prev_3month':
+                $startDate = Carbon::now()->subMonths(3)->startOfMonth();
+                $endDate = Carbon::now()->subMonths(3)->endOfMonth();
+                break;
+            default: // Default ke bulan ini jika opsi tidak dikenal
+                $startDate = Carbon::now()->startOfMonth();
+                $endDate = Carbon::now()->endOfMonth();
+                break;
+        }
 
-        // if (in_array($period, ['all_time', 'this_year', 'last_year'])) {
-        //     // BULANAN
-        //     $current = $start->copy();
+        // Statistik Ringkasan (total utang, piutang, transaksi) akan difilter berdasarkan periode yang dipilih
+        // Query builder untuk transaksi dengan filter tanggal
+        $transactionsInPeriodQuery = Transaction::whereBetween('datetime', [$startDate, $endDate]);
 
-        //     while ($current->lessThanOrEqualTo($end)) {
-        //         $labels[] = $current->format('F Y'); // e.g., January 2024
+        $totalDebt = $transactionsInPeriodQuery->clone()->where('type', Transaction::Type_Credit)->sum('amount');
+        $totalReceivable = $transactionsInPeriodQuery->clone()->where('type', Transaction::Type_Debt)->sum('amount');
+        $totalTransactions = $transactionsInPeriodQuery->clone()->count();
 
-        //         $monthStart = $current->copy()->startOfMonth();
-        //         $monthEnd = $current->copy()->endOfMonth();
+        // Data Ringkasan "Big Numbers" yang tidak bergantung pada filter periode tunggal:
+        // Ini adalah status keseluruhan saat ini, bukan berdasarkan periode tertentu.
+        $totalParties = Party::count();
+        $totalBalance = Party::sum('balance');
 
-        //         $countInteraction = Interaction::where('status', 'done')
-        //             ->whereBetween('date', [$monthStart, $monthEnd])
-        //             ->count();
+        // // Data dummy untuk jatuh tempo (karena tidak ada kolom di tabel Transaction)
+        // $receivableDue = 3; // Contoh: jumlah piutang yang sudah jatuh tempo
+        // $debtDue = 5; // Contoh: jumlah utang yang sudah jatuh tempo
 
-        //         $countClosing = Closing::whereBetween('date', [$monthStart, $monthEnd])
-        //             ->count();
+        // Top 5 Peminjam (Utang Terbesar) dan Top 5 Pemberi Pinjaman (Piutang Terbesar)
+        // Data ini biasanya berdasarkan saldo saat ini, bukan filtered per periode.
+        $topDebtors = Party::where('balance', '<', 0)
+            ->orderBy('balance', 'asc') // Urutkan dari saldo paling negatif (utang terbesar)
+            ->limit(5)
+            ->get(['name', 'balance as value'])
+            ->map(function ($debtor) {
+                $debtor->value = abs($debtor->value); // Mengambil nilai absolut untuk tampilan
+                return $debtor;
+            });
 
-        //         $countNewCustomer = Customer::whereBetween('created_datetime', [$monthStart, $monthEnd])
-        //             ->count();
+        $topCreditors = Party::where('balance', '>', 0)
+            ->orderBy('balance', 'desc') // Urutkan dari saldo paling positif (piutang terbesar)
+            ->limit(5)
+            ->get(['name', 'balance as value']);
 
-        //         $sum_closing = Closing::whereBetween('date', [$monthStart, $monthEnd])
-        //             ->sum('amount');
+        // Grafik Transaksi Bulanan: Tetap menampilkan 6 bulan terakhir sebagai tren, tidak terpengaruh filter periode tunggal
+        $chartStartDate = Carbon::now()->subMonths(5)->startOfMonth();
+        $chartEndDate = Carbon::now()->endOfMonth();
 
-        //         $count_interactions[]  = $countInteraction;
-        //         $count_closings[]      = $countClosing;
-        //         $count_new_customers[] = $countNewCustomer;
-        //         $total_closings[]      = $sum_closing;
+        $monthlyTransactionsData = Transaction::selectRaw('DATE_FORMAT(datetime, "%b") as month_label, SUM(amount) as total_amount')
+            ->whereBetween('datetime', [$chartStartDate, $chartEndDate])
+            ->groupBy('month_label')
+            ->orderByRaw('MIN(datetime)')
+            ->get();
 
-        //         $current->addMonth();
-        //     }
-        // } else {
-        //     // HARIAN
-        //     $current = $start->copy();
+        $allMonths = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthKey = Carbon::now()->subMonths($i)->startOfMonth()->format('M');
+            $allMonths[$monthKey] = 0;
+        }
 
-        //     while ($current->lessThanOrEqualTo($end)) {
-        //         $labels[] = $current->format('d'); // e.g., 01, 02, ..., 31
+        foreach ($monthlyTransactionsData as $item) {
+            $allMonths[$item->month_label] = $item->total_amount;
+        }
 
-        //         $countInteraction = Interaction::where('status', 'done')
-        //             ->whereDate('date', $current->format('Y-m-d'))
-        //             ->count();
+        $monthlyLabels = array_keys($allMonths);
+        $monthlyData = array_values($allMonths);
 
-        //         $countClosing = Closing::whereDate('date', $current->format('Y-m-d'))
-        //             ->count();
+        // Distribusi Kategori Transaksi: Difilter berdasarkan periode yang dipilih
+        $transactionCategoryDistribution = $transactionsInPeriodQuery->clone()
+            ->join('transaction_categories', 'transactions.category_id', '=', 'transaction_categories.id')
+            ->selectRaw('transaction_categories.name, COUNT(transactions.id) as value')
+            ->groupBy('transaction_categories.name')
+            ->get();
 
-        //         $countNewCustomer = Customer::whereDate('created_datetime', $current->format('Y-m-d'))
-        //             ->count();
-
-        //         $sum_closing = Closing::whereDate('date', $current->format('Y-m-d'))
-        //             ->sum('amount');
-
-        //         $count_interactions[]  = $countInteraction;
-        //         $count_closings[]      = $countClosing;
-        //         $count_new_customers[] = $countNewCustomer;
-        //         $total_closings[]      = $sum_closing;
-
-        //         $current->addDay();
-        //     }
-        // }
+        $dashboardData = [
+            'summary' => [
+                'balance' => $totalBalance,
+                'totalParties' => $totalParties,
+                'totalDebt' => $totalDebt,
+                'totalReceivable' => $totalReceivable,
+                'totalTransactions' => $totalTransactions,
+            ],
+            'topDebtors' => $topDebtors,
+            'topCreditors' => $topCreditors,
+            'monthlyTransactions' => [
+                'labels' => $monthlyLabels,
+                'data' => $monthlyData,
+            ],
+            'transactionCategoryDistribution' => $transactionCategoryDistribution,
+        ];
 
         return inertia('app/dashboard/Index', [
-            'chart_data' => [
-                // 'labels' => $labels,
-                // 'count_interactions' => $count_interactions,
-                // 'count_closings' => $count_closings,
-                // 'count_new_customers' => $count_new_customers,
-                // 'total_closings' => $total_closings,
-                // 'interactions' => Interaction::interactionCountByStatus($start_date, $end_date),
-                // 'top_interactions'  => Interaction::getTopInteractions($start_date, $end_date, 5),
-                // 'top_sales_closings'  => Closing::getTop5SalesClosings($start_date, $end_date, 5),
-            ],
-            'data' => [
-                // 'recent_interactions' => Interaction::recentInteractions(5),
-                // 'recent_closings' => Closing::recentClosings(5),
-                // 'recent_customers' => Customer::recentCustomers(5),
-                // 'active_interaction_plan_count' => Interaction::activePlanCount(),
-                // 'active_customer_service_count' => CustomerService::activeCustomerServiceCount(),
-                // 'active_customer_count' => Customer::activeCustomerCount(),
-                // 'active_sales_count' => User::activeSalesCount(),
-                // 'active_user_count' => User::activeUserCount(),
-                // 'active_service_count' => Service::activeServiceCount(),
-
-                // 'interaction_count' => Interaction::interactionCount($start_date, $end_date),
-                // 'new_customer_count' => Customer::newCustomerCount($start_date, $end_date),
-                // 'closing_count' => Closing::closingCount($start_date, $end_date),
-                // 'closing_amount' => Closing::closingAmount($start_date, $end_date),
-            ]
+            'data' => $dashboardData,
+            'month' => $request->query('month', 'this_month'),
         ]);
     }
 

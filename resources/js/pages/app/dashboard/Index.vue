@@ -1,36 +1,32 @@
 <script setup>
-import CurrentStatCards from "./cards/CurrentStatCards.vue";
-import StatCards from "./cards/StatCards.vue";
-import ChartCard from "./cards/ChartCard.vue";
-import RecentInteractionsCard from "./cards/RecentInteractionsCard.vue";
-import RecentClosingsCard from "./cards/RecentClosingsCard.vue";
-import RecentCustomersCard from "./cards/RecentCustomersCard.vue";
 import { router, usePage } from "@inertiajs/vue3";
-
 import { ref } from "vue";
 import { getQueryParams } from "@/helpers/utils";
 
-const title = "Dashboard";
-const showFilter = ref(true);
-const selected_period = ref(getQueryParams()["period"] ?? "this_month");
+// Import komponen yang sudah dipisah
+import SummaryCards from "./cards/SummaryCards.vue";
+import ChartCards from "./cards/ChartCards.vue";
+import TopCards from "./cards/TopCards.vue";
 
 const page = usePage();
+// Dummy Data
+const dashboardData = ref(page.props.data);
 
-const period_options = ref([
-  { value: "today", label: "Hari Ini" },
-  { value: "yesterday", label: "Kemarin" },
-  { value: "this_week", label: "Minggu Ini" },
-  { value: "last_week", label: "Minggu Lalu" },
+const title = "Dashboard";
+const showFilter = ref(false);
+const selectedMonth = ref(getQueryParams()["month"] ?? "this_month");
+const monthOptions = ref([
   { value: "this_month", label: "Bulan Ini" },
-  { value: "last_month", label: "Bulan Lalu" },
-  { value: "this_year", label: "Tahun Ini" },
-  { value: "last_year", label: "Tahun Lalu" },
-  { value: "last_7_days", label: "7 Hari Terakhir" },
-  { value: "last_30_days", label: "30 Hari Terakhir" },
-  { value: "all_time", label: "Seluruh Waktu" },
+  { value: "this_week", label: "Minggu Ini" },
+  { value: "prev_week", label: "Minggu Lalu" },
+  { value: "prev_month", label: "1 Bulan Sebelumnya" },
+  { value: "prev_2month", label: "2 Bulan Sebelumnya" },
+  { value: "prev_3month", label: "3 Bulan Sebelumnya" },
+  // { value: "custom", label: "Custom" },
 ]);
+
 const onFilterChange = () => {
-  router.visit(route("app.dashboard", { period: selected_period.value }));
+  router.visit(route("app.dashboard", { month: selectedMonth.value }));
 };
 </script>
 
@@ -50,55 +46,48 @@ const onFilterChange = () => {
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
-          <div class="col-12 col-md-3">
-            <q-select
-              class="custom-select"
-              style="min-width: 150px"
-              v-model="selected_period"
-              :options="period_options"
-              label="Periode"
-              dense
-              map-options
-              emit-value
-              outlined
-              @update:model-value="onFilterChange"
-            />
-          </div>
+          <q-select
+            class="custom-select col-12"
+            style="min-width: 150px"
+            v-model="selectedMonth"
+            :options="monthOptions"
+            label="Bulan"
+            dense
+            map-options
+            emit-value
+            outlined
+            @update:model-value="onFilterChange"
+          />
         </div>
       </q-toolbar>
     </template>
+
     <div class="q-pa-sm">
-      <div>
-        <div class="text-subtitle1 text-bold text-grey-8">Statistik Aktual</div>
-        <current-stat-cards
-          :stats="page.props.current_stats"
-          class="q-py-none"
-        />
-        <div class="row q-col-gutter-sm q-pt-sm">
-          <recent-interactions-card
-            :items="page.props.recent_interactions"
-            class="col-12 col-md-4"
-          />
-          <recent-customers-card
-            :items="page.props.recent_customers"
-            class="col-12 col-md-4"
-          />
-          <recent-closings-card
-            :items="page.props.recent_closings"
-            class="col-12 col-md-4"
-          />
-        </div>
+      <div class="q-pa-none">
+        <!-- Menggunakan komponen SummaryCards -->
+        <SummaryCards :summary="dashboardData.summary" />
       </div>
-      <div class="q-pt-md">
-        <div class="text-subtitle1 text-bold text-grey-8">
-          Statistik
-          {{ period_options.find((a) => a.value == selected_period).label }}
-        </div>
-        <stat-cards :stats="page.props.period_stats" class="q-py-none" />
-      </div>
-      <div>
-        <!-- <chart-card class="q-py-none q-pt-lg" /> -->
-      </div>
+
+      <!-- Menggunakan komponen ChartComponent -->
+      <ChartCards
+        :monthly-transactions="dashboardData.monthlyTransactions"
+        :transaction-category-distribution="
+          dashboardData.transactionCategoryDistribution
+        "
+      />
+
+      <!-- Menggunakan komponen TopLists -->
+      <TopCards
+        :top-debtors="dashboardData.topDebtors"
+        :top-creditors="dashboardData.topCreditors"
+      />
     </div>
   </authenticated-layout>
 </template>
+
+<style scoped>
+.text-h6 {
+  font-size: 16px;
+  font-weight: bold;
+}
+</style>

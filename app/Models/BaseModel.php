@@ -31,6 +31,7 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class BaseModel extends \Illuminate\Database\Eloquent\Model
 {
@@ -40,9 +41,11 @@ class BaseModel extends \Illuminate\Database\Eloquent\Model
     {
         parent::boot();
 
-        static::addGlobalScope('user', function ($query) {
+
+        static::addGlobalScope('user', function (Builder $builder) {
             if (Auth::id()) {
-                $query->where('user_id', Auth::id());
+                $model = $builder->getModel();
+                $builder->where($model->getTable() . '.user_id', Auth::id());
             }
         });
 
