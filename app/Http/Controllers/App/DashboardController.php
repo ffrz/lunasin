@@ -38,20 +38,16 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $selectedPeriod = $request->query('month', 'this_month'); // Menggunakan 'month' sebagai parameter umum untuk periode
-        $currentUserId = auth()->id(); // Pastikan ID user yang sedang login tersedia
-
+        $selectedPeriod = $request->query('month', 'this_month');
         $startDate = null;
         $endDate = null;
 
-        // Menentukan rentang tanggal berdasarkan opsi filter yang dipilih
         switch ($selectedPeriod) {
             case 'this_month':
                 $startDate = Carbon::now()->startOfMonth();
                 $endDate = Carbon::now()->endOfMonth();
                 break;
             case 'this_week':
-                // Perhatikan: Carbon::MONDAY atau Carbon::SUNDAY tergantung definisi awal minggu Anda
                 $startDate = Carbon::now()->startOfWeek(Carbon::MONDAY);
                 $endDate = Carbon::now()->endOfWeek(Carbon::SUNDAY);
                 break;
@@ -71,46 +67,33 @@ class DashboardController extends Controller
                 $startDate = Carbon::now()->subMonths(3)->startOfMonth();
                 $endDate = Carbon::now()->subMonths(3)->endOfMonth();
                 break;
-            default: // Default ke bulan ini jika opsi tidak dikenal
+            default:
                 $startDate = Carbon::now()->startOfMonth();
                 $endDate = Carbon::now()->endOfMonth();
                 break;
         }
 
-        // Statistik Ringkasan (total utang, piutang, transaksi) akan difilter berdasarkan periode yang dipilih
-        // Query builder untuk transaksi dengan filter tanggal
         $transactionsInPeriodQuery = Transaction::whereBetween('datetime', [$startDate, $endDate]);
-
-        $totalDebt = $transactionsInPeriodQuery->clone()->where('type', Transaction::Type_Credit)->sum('amount');
-        $totalReceivable = $transactionsInPeriodQuery->clone()->where('type', Transaction::Type_Debt)->sum('amount');
+        $totalDebt = Party::where('balance', '>', 0)->sum('balance');
+        $totalReceivable = abs(Party::where('balance', '<', 0)->sum('balance'));
         $totalTransactions = $transactionsInPeriodQuery->clone()->count();
 
-        // Data Ringkasan "Big Numbers" yang tidak bergantung pada filter periode tunggal:
-        // Ini adalah status keseluruhan saat ini, bukan berdasarkan periode tertentu.
         $totalParties = Party::count();
-        $totalBalance = Party::sum('balance');
-
-        // // Data dummy untuk jatuh tempo (karena tidak ada kolom di tabel Transaction)
-        // $receivableDue = 3; // Contoh: jumlah piutang yang sudah jatuh tempo
-        // $debtDue = 5; // Contoh: jumlah utang yang sudah jatuh tempo
-
-        // Top 5 Peminjam (Utang Terbesar) dan Top 5 Pemberi Pinjaman (Piutang Terbesar)
-        // Data ini biasanya berdasarkan saldo saat ini, bukan filtered per periode.
+        $totalBalance = -Party::sum('balance');
         $topDebtors = Party::where('balance', '<', 0)
-            ->orderBy('balance', 'asc') // Urutkan dari saldo paling negatif (utang terbesar)
+            ->orderBy('balance', 'asc')
             ->limit(5)
             ->get(['name', 'balance as value'])
             ->map(function ($debtor) {
-                $debtor->value = abs($debtor->value); // Mengambil nilai absolut untuk tampilan
+                $debtor->value = abs($debtor->value);
                 return $debtor;
             });
 
         $topCreditors = Party::where('balance', '>', 0)
-            ->orderBy('balance', 'desc') // Urutkan dari saldo paling positif (piutang terbesar)
+            ->orderBy('balance', 'desc')
             ->limit(5)
             ->get(['name', 'balance as value']);
 
-        // Grafik Transaksi Bulanan: Tetap menampilkan 6 bulan terakhir sebagai tren, tidak terpengaruh filter periode tunggal
         $chartStartDate = Carbon::now()->subMonths(5)->startOfMonth();
         $chartEndDate = Carbon::now()->endOfMonth();
 
@@ -127,13 +110,12 @@ class DashboardController extends Controller
         }
 
         foreach ($monthlyTransactionsData as $item) {
-            $allMonths[$item->month_label] = $item->total_amount;
+            $allMonths[$item->month_label] = -$item->total_amount;
         }
 
         $monthlyLabels = array_keys($allMonths);
         $monthlyData = array_values($allMonths);
 
-        // Distribusi Kategori Transaksi: Difilter berdasarkan periode yang dipilih
         $transactionCategoryDistribution = $transactionsInPeriodQuery->clone()
             ->join('transaction_categories', 'transactions.category_id', '=', 'transaction_categories.id')
             ->selectRaw('transaction_categories.name, COUNT(transactions.id) as value')
