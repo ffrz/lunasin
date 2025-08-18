@@ -7,7 +7,7 @@ defineComponent({
   name: "AuthenticatedLayout",
 });
 
-const LEFT_DRAWER_STORAGE_KEY = "advanta-report.layout.left-drawer-open";
+const LEFT_DRAWER_STORAGE_KEY = "lunasin.layout.left-drawer-open";
 const $q = useQuasar();
 const page = usePage();
 const leftDrawerOpen = ref(
@@ -131,6 +131,19 @@ onMounted(() => {
             </q-item-section>
             <q-item-section>
               <q-item-label>Dashboard</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            v-ripple
+            :active="$page.url.startsWith('/app/reports')"
+            @click="router.get(route('app.report.index'))"
+          >
+            <q-item-section avatar>
+              <q-icon name="analytics" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Laporan</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />

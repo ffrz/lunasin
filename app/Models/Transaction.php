@@ -26,8 +26,8 @@ class Transaction extends BaseModel
     const Type_Adjustment = 'adjustment';
 
     const Types = [
-        self::Type_Debt => 'Uang Masuk',
-        self::Type_Credit => 'Uang Keluar',
+        self::Type_Debt => '(+) Berutang / Terima Bayar Utang',
+        self::Type_Credit => '(-) Bayar Utang / Beri Piutang',
         self::Type_Adjustment => 'Penyesuaian',
     ];
 

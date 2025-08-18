@@ -22,21 +22,10 @@ const filter_options = reactive({
 });
 
 const report_types = [
-  { value: "activity", label: "Laporan Kegiatan" },
-  { value: "demplot", label: "Laporan Demplot" },
-  { value: "target", label: "Laporan Target" },
-  // { value: 'closing-detail', label: 'Laporan Closing Penjualan' },
-  // { value: 'closing-by-sales', label: 'Laporan Rekapitulasi Closing Sales' },
-  // { value: 'closing-by-services', label: 'Laporan Rekap Closing Layanan' },
-  // { value: 'customer-services-active', label: 'Laporan Layanan Pelanggan Aktif' },
-  // { value: 'customer-services-new', label: 'Laporan Layanan Pelanggan Baru' },
-  // { value: 'customer-services-ended', label: 'Laporan Layanan Pelanggan Berakhir' },
-  // { value: 'sales-performance', label: 'Laporan Rekapitulasi Kinerja Sales' },
-  // { value: 'sales-activity', label: 'Laporan Rekap Aktivitas Sales' },
-  // { value: 'sales-activity-detail', label: 'Laporan Rincian Aktivitas Sales' },
-  // { value: 'client-new', label: 'Laporan Klien Baru' },
-  // { value: 'client-active-inactive', label: 'Laporan Klien Aktif / Nonaktif' },
-  // { value: 'client-history', label: 'Laporan Riwayat Klien' },
+  { value: "transaction-detail", label: "Laporan Rincian Transaksi" },
+  { value: "transaction-recap", label: "Laporan Rekapitulasi Transaksi" },
+  { value: "party-balance", label: "Laporan Utang / Piutang per Pihak" },
+  { value: "global-balance", label: "Laporan Saldo Bersih" },
 ];
 
 const period_options = ref([
@@ -53,29 +42,29 @@ const period_options = ref([
   { value: "last_30_days", label: "30 Hari Terakhir" },
 ]);
 
-const services = [
-  { value: "all", label: "Semua" },
-  ...page.props.services.map((service) => ({
-    value: service.id,
-    label: `${service.name}`,
-  })),
-];
+// const services = [
+//   { value: "all", label: "Semua" },
+//   ...page.props.services.map((service) => ({
+//     value: service.id,
+//     label: `${service.name}`,
+//   })),
+// ];
 
-const users = [
-  { value: "all", label: "Semua" },
-  ...page.props.users.map((user) => ({
-    value: user.id,
-    label: `${user.name} (${user.email})`,
-  })),
-];
+// const users = [
+//   { value: "all", label: "Semua" },
+//   ...page.props.users.map((user) => ({
+//     value: user.id,
+//     label: `${user.name} (${user.email})`,
+//   })),
+// ];
 
-const clients = [
-  { value: "all", label: "Semua" },
-  ...page.props.clients.map((client) => ({
-    value: client.id,
-    label: `${client.name} - ${client.company} [${client.id}]`,
-  })),
-];
+// const clients = [
+//   { value: "all", label: "Semua" },
+//   ...page.props.clients.map((client) => ({
+//     value: client.id,
+//     label: `${client.name} - ${client.company} [${client.id}]`,
+//   })),
+// ];
 
 const submit = () => {
   if (!validate()) return;

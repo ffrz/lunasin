@@ -7,7 +7,7 @@ use App\Http\Controllers\App\ProfileController;
 use App\Http\Controllers\App\TransactionCategoryController;
 use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\App\ReportController;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\NonAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -22,16 +22,9 @@ Route::get('/test', function () {
 
 Route::middleware(NonAuthenticated::class)->group(function () {
     Route::redirect('/', 'app/auth/login', 301);
-    // Route::prefix('/app/auth')->group(function () {
-    //     Route::match(['get', 'post'], 'login', [AuthController::class, 'login'])->name('app.auth.login');
-    //     Route::match(['get', 'post'], 'register', [AuthController::class, 'register'])->name('app.auth.register');
-    //     Route::match(['get', 'post'], 'forgot-password', [AuthController::class, 'forgotPassword'])->name('app.auth.forgot-password');
-    // });
 });
 
 Route::middleware([Auth::class])->group(function () {
-    // Route::match(['get', 'post'], 'app/auth/logout', [AuthController::class, 'logout'])->name('app.auth.logout');
-
     Route::prefix('admin')->group(function () {
         Route::redirect('', 'app/dashboard', 301);
 
@@ -40,6 +33,10 @@ Route::middleware([Auth::class])->group(function () {
         Route::get('about', function () {
             return inertia('app/About');
         })->name('app.about');
+
+        Route::prefix('reports')->group(function() {
+            Route::get('', [ReportController::class, 'index'])->name('app.report.index');
+        });
 
         Route::prefix('transactions')->group(function () {
             Route::get('', [TransactionController::class, 'index'])->name('app.transaction.index');
