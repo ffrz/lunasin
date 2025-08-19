@@ -1,20 +1,23 @@
 <script setup>
 import { router, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { getQueryParams } from "@/helpers/utils";
+import { usePageStorage } from "@/composables/usePageStorage";
 
-// Import komponen yang sudah dipisah
+// Import komponen
 import SummaryCards from "./cards/SummaryCards.vue";
 import ChartCards from "./cards/ChartCards.vue";
 import TopCards from "./cards/TopCards.vue";
 
 const page = usePage();
-// Dummy Data
 const dashboardData = ref(page.props.data);
+const storage = usePageStorage("dashboard");
 
 const title = "Dashboard";
-const showFilter = ref(false);
+const showFilter = ref(storage.get("show-filter", false));
+
 const selectedYear = ref(getQueryParams()["year"] ?? "this_year");
+
 const yearOptions = ref([
   { value: "this_year", label: "Tahun Ini" },
   { value: "prev_year", label: "Tahun Lalu" },
@@ -24,9 +27,16 @@ const yearOptions = ref([
   { value: "prev_5_year", label: "5 Tahun Lalu" },
 ]);
 
+
 const onFilterChange = () => {
-  router.visit(route("app.dashboard", { year: selectedYear.value }));
+  router.visit(route("app.dashboard", { year: selectedYear.value }), {
+    preserveState: true,
+    preserveScroll: true,
+  });
 };
+
+watch(showFilter, () => storage.set("show-filter", showFilter.value));
+
 </script>
 
 <template>
