@@ -5,11 +5,31 @@ import { handleSubmit } from "@/helpers/client-req-handler";
 import { scrollToFirstErrorField } from "@/helpers/utils";
 import LocaleNumberInput from "@/components/LocaleNumberInput.vue";
 import DateTimePicker from "@/components/DateTimePicker.vue";
+import QuickAddDialog from "@/components/QuickAddDialog.vue";
 import dayjs from "dayjs";
 
 const page = usePage();
 const title = (!!page.props.data.id ? "Edit" : "Catat") + " Transaksi";
+const isQuickAddDialogVisible = ref(false);
+const quickAddEntityType = ref(null);
 
+const handleEntityCreated = (newEntity) => {
+  router.reload({
+    only: ["parties", "categories"],
+    onSuccess: () => {
+      if (quickAddEntityType.value === "party") {
+        form.party_id = newEntity.value;
+      } else if (quickAddEntityType.value === "category") {
+        form.category_id = newEntity.value;
+      }
+    },
+  });
+};
+
+const openQuickAddDialog = (type) => {
+  quickAddEntityType.value = type;
+  isQuickAddDialogVisible.value = true;
+};
 const parties = ref(
   page.props.parties.map((party) => ({
     label: party.name,
@@ -121,7 +141,18 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
                 :errorMessage="form.errors.party_id"
                 :error="!!form.errors.party_id"
                 :disable="form.processing"
-              />
+              >
+                <template v-slot:append>
+                  <q-btn
+                    icon="add"
+                    dense
+                    round
+                    flat
+                    @click.stop.prevent="openQuickAddDialog('party')"
+                  />
+                </template>
+              </q-select>
+
               <q-select
                 class="custom-select"
                 v-model="form.category_id"
@@ -135,7 +166,18 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
                 :errorMessage="form.errors.category_id"
                 :error="!!form.errors.category_id"
                 :disable="form.processing"
-              />
+              >
+                <template v-slot:append>
+                  <q-btn
+                    icon="add"
+                    dense
+                    round
+                    flat
+                    @click.stop.prevent="openQuickAddDialog('category')"
+                  />
+                </template>
+              </q-select>
+
               <LocaleNumberInput
                 v-model:modelValue="form.amount"
                 :label="
@@ -181,6 +223,11 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
           </q-card>
         </q-form>
       </div>
+      <QuickAddDialog
+        v-model="isQuickAddDialogVisible"
+        :entity-type="quickAddEntityType"
+        @created="handleEntityCreated"
+      />
     </q-page>
   </authenticated-layout>
 </template>
