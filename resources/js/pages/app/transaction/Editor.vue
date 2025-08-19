@@ -114,6 +114,7 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
                 :error="!!form.errors.amount"
                 :errorMessage="form.errors.amount"
                 :rules="[]"
+                hide-button-space
               />
               <q-input
                 v-model.trim="form.notes"
@@ -127,6 +128,7 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
                 :error="!!form.errors.notes"
                 :error-message="form.errors.notes"
                 :rules="[]"
+                hide-button-space
               />
             </q-card-section>
             <q-card-section class="q-gutter-sm">
