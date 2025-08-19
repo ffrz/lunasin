@@ -81,8 +81,8 @@ Akses aplikasi di http://localhost:8000.
 * Mobile-friendly PWA (Pending review)
 
 ### 👨‍💻 Kontributor
-- Fahmi Fauzi Rahman @ffrz
-
+- Fahmi Fauzi Rahman https://github.com/ffrz
+- Noval Faturrahman https://github.com/NvlFR
 ### 📜 Lisensi
 Project ini bersifat internal/private (belum open source).
 Lisensi dapat disesuaikan jika dibuka untuk publik.
