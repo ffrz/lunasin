@@ -22,7 +22,8 @@ const filter_options = reactive({
 });
 
 const report_types = [
-  { value: "transaction-detail", label: "Laporan Rincian Transaksi" },
+  { value: "payables-detail", label: "Laporan Rincian Utang" },
+  { value: "receivables-detail", label: "Laporan Rincian Piutang" },
   { value: "transaction-recap", label: "Laporan Rekapitulasi Transaksi" },
   {
     value: "parties-payables",
@@ -66,7 +67,8 @@ const submit = () => {
     query.append("end_date", form.end_date);
   }
 
-  const base_url = route("app.report." + form.report_type);
+  const routeName = "app.report." + form.report_type;
+  const base_url = route(routeName);
 
   const downloadLink = `${base_url}?${query.toString()}`;
   window.open(downloadLink, "_blank");
@@ -136,9 +138,12 @@ function updateState() {
     filter_options[key] = false;
   }
 
-  if (["activity", "demplot", "target"].includes(form.report_type)) {
+  if (
+    ["payables-detail", "receivables-detail", "transaction-recap"].includes(
+      form.report_type
+    )
+  ) {
     filter_options.show_period = true;
-    filter_options.show_user = true;
   }
   // else if ([
   // ].includes(form.report_type)

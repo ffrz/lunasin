@@ -28,8 +28,10 @@
 
 namespace App\Http\Controllers\App;
 
+use App\Helpers\PeriodHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Party;
+use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
@@ -47,7 +49,55 @@ class ReportController extends Controller
         return inertia('app/report/Index');
     }
 
-    public function transactionDetail(Request $request) {}
+    public function transactionDetailByType(Request $request, string $type)
+    {
+        $user = Auth::user();
+        $period = $request->get('period', 'this_month'); // default this_month
+        [$start, $end] = PeriodHelper::resolve(
+            $period,
+            $request->get('start_date'),
+            $request->get('end_date')
+        );
+
+        $q = Transaction::with(['category:id,name', 'party:id,name'])
+            ->where('user_id', $user->id);
+
+        // tentukan filter berdasarkan tipe
+        if ($type === 'receivable') {
+            $q->where('amount', '<', 0);
+            $titleText = 'Laporan Rincian Transaksi Piutang';
+        } elseif ($type === 'payable') {
+            $q->where('amount', '>', 0);
+            $titleText = 'Laporan Rincian Transaksi Utang';
+        } else {
+            abort(400, 'Invalid transaction type.');
+        }
+
+        if ($start && $end) {
+            $q->whereBetween('datetime', [$start, $end]);
+        }
+
+        $items = $q->orderBy('datetime', 'desc')->get();
+
+        [$title] = $this->resolveTitle($titleText);
+
+        return $this->generatePdfReport(
+            'report.transaction-detail',
+            'portrait',
+            compact('items', 'user', 'title', 'period', 'start', 'end'),
+            'pdf'
+        );
+    }
+
+    public function receivablesDetail(Request $request)
+    {
+        return $this->transactionDetailByType($request, 'receivable');
+    }
+
+    public function payablesDetail(Request $request)
+    {
+        return $this->transactionDetailByType($request, 'payable');
+    }
 
     public function transactionRecap(Request $request) {}
 
