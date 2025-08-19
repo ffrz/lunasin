@@ -1,6 +1,6 @@
 <script setup>
 import { router, usePage } from "@inertiajs/vue3";
-import { ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 import { getQueryParams } from "@/helpers/utils";
 import { usePageStorage } from "@/composables/usePageStorage";
 
@@ -10,12 +10,10 @@ import ChartCards from "./cards/ChartCards.vue";
 import TopCards from "./cards/TopCards.vue";
 
 const page = usePage();
-const dashboardData = ref(page.props.data);
+const dashboardData = reactive(page.props.data);
 const storage = usePageStorage("dashboard");
-
 const title = "Dashboard";
 const showFilter = ref(storage.get("show-filter", false));
-
 const selectedYear = ref(getQueryParams()["year"] ?? "this_year");
 
 const yearOptions = ref([
@@ -27,16 +25,14 @@ const yearOptions = ref([
   { value: "prev_5_year", label: "5 Tahun Lalu" },
 ]);
 
-
 const onFilterChange = () => {
   router.visit(route("app.dashboard", { year: selectedYear.value }), {
-    preserveState: true,
+    preserveState: false,
     preserveScroll: true,
   });
 };
 
 watch(showFilter, () => storage.set("show-filter", showFilter.value));
-
 </script>
 
 <template>

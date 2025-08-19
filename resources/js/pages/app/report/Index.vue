@@ -49,30 +49,6 @@ const period_options = ref([
   { value: "last_30_days", label: "30 Hari Terakhir" },
 ]);
 
-// const services = [
-//   { value: "all", label: "Semua" },
-//   ...page.props.services.map((service) => ({
-//     value: service.id,
-//     label: `${service.name}`,
-//   })),
-// ];
-
-// const users = [
-//   { value: "all", label: "Semua" },
-//   ...page.props.users.map((user) => ({
-//     value: user.id,
-//     label: `${user.name} (${user.email})`,
-//   })),
-// ];
-
-// const clients = [
-//   { value: "all", label: "Semua" },
-//   ...page.props.clients.map((client) => ({
-//     value: client.id,
-//     label: `${client.name} - ${client.company} [${client.id}]`,
-//   })),
-// ];
-
 const submit = () => {
   if (!validate()) return;
 
