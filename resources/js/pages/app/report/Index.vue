@@ -24,7 +24,14 @@ const filter_options = reactive({
 const report_types = [
   { value: "transaction-detail", label: "Laporan Rincian Transaksi" },
   { value: "transaction-recap", label: "Laporan Rekapitulasi Transaksi" },
-  { value: "party-balance", label: "Laporan Utang / Piutang per Pihak" },
+  {
+    value: "parties-payables",
+    label: "Laporan Daftar Utang",
+  },
+  {
+    value: "parties-receivables",
+    label: "Laporan Daftar Piutang",
+  },
   { value: "global-balance", label: "Laporan Saldo Bersih" },
 ];
 

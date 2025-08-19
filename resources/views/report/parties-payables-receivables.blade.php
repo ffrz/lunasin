@@ -7,22 +7,22 @@
     <thead>
       <tr>
         <th>No</th>
-        <th>Tanggal</th>
-        <th>Sales</th>
-        <th>Total Interaksi</th>
-        <th>Total Closing</th>
-        <th>Total Client Baru</th>
+        <th>Pihak</th>
+        <th>Jenis</th>
+        <th>Telepon</th>
+        <th>Alamat</th>
+        <th>Total (Rp)</th>
       </tr>
     </thead>
     <tbody>
       @forelse ($items as $index => $item)
         <tr>
           <td align="right">{{ $index + 1 }}</td>
-          <td>{{ $item->date }}</td>
-          <td>{{ $item->sales_name }}</td>
-          <td>{{ $item->total_interactions }}</td>
-          <td>{{ $item->total_closings }}</td>
-          <td>{{ $item->total_new_customers }}</td>
+          <td>{{ $item->name }}</td>
+          <td>{{ \App\Models\Party::Types[$item->type] }}</td>
+          <td>{{ $item->phone }}</td>
+          <td>{{ $item->address }}</td>
+          <td align="right">{{ format_number(abs($item->balance)) }}</td>
         </tr>
       @empty
         <tr>

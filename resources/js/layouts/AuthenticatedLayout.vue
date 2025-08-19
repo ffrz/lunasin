@@ -223,7 +223,9 @@ onMounted(() => {
           >
             <q-item-section>
               <q-item-label
-                ><q-icon name="logout" class="q-mr-sm" />Keluar</q-item-label
+                ><q-icon name="logout" class="q-mr-sm" />{{
+                  $t("logout")
+                }}</q-item-label
               >
             </q-item-section>
           </q-item>
