@@ -20,23 +20,28 @@ const props = defineProps({
         <div class="text-h6 q-mb-sm text-center">
           Top 5 Peminjam (Utang Terbesar)
         </div>
-        <q-list separator>
-          <q-item v-for="(item, index) in topDebtors" :key="index">
-            <q-item-section avatar>
-              <q-avatar color="red-8" text-color="white" size="sm">{{
-                index + 1
-              }}</q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ item.name }}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-item-label class="text-red-8">{{
-                formatNumber(item.value)
-              }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+        <template v-if="topDebtors.length">
+          <q-list separator>
+            <q-item v-for="(item, index) in topDebtors" :key="index">
+              <q-item-section avatar>
+                <q-avatar color="red-8" text-color="white" size="sm">{{
+                  index + 1
+                }}</q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ item.name }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-item-label class="text-red-8">{{
+                  formatNumber(item.value)
+                }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </template>
+        <template v-else>
+          <div class="text-center text-grey-8">Data Tidak tersedia</div>
+        </template>
       </q-card>
     </div>
     <div class="col-md-6 col-12">
@@ -44,23 +49,28 @@ const props = defineProps({
         <div class="text-h6 q-mb-sm text-center">
           Top 5 Pemberi Pinjaman (Piutang Terbesar)
         </div>
-        <q-list separator>
-          <q-item v-for="(item, index) in topCreditors" :key="index">
-            <q-item-section avatar>
-              <q-avatar color="green-8" text-color="white" size="sm">{{
-                index + 1
-              }}</q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ item.name }}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-item-label class="text-green-8">{{
-                formatNumber(item.value)
-              }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+        <template v-if="topCreditors.length">
+          <q-list separator>
+            <q-item v-for="(item, index) in topCreditors" :key="index">
+              <q-item-section avatar>
+                <q-avatar color="green-8" text-color="white" size="sm">{{
+                  index + 1
+                }}</q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ item.name }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-item-label class="text-green-8">{{
+                  formatNumber(item.value)
+                }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </template>
+        <template v-else>
+          <div class="text-center text-grey-8">Data Tidak tersedia</div>
+        </template>
       </q-card>
     </div>
   </div>

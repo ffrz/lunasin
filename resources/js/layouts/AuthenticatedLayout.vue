@@ -187,19 +187,7 @@ onMounted(() => {
             </q-item-section>
           </q-item>
           <q-separator />
-          <!-- <q-item
-            clickable
-            v-ripple
-            :active="$page.url.startsWith('/app/settings/users')"
-            @click="router.get(route('app.user.index'))"
-          >
-            <q-item-section avatar>
-              <q-icon name="group" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Pengguna</q-item-label>
-            </q-item-section>
-          </q-item> -->
+
           <q-item
             clickable
             v-ripple

@@ -185,6 +185,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
         :rows-per-page-options="[10, 25, 50]"
         @request="fetchItems"
         binary-state-sort
+        class="full-height-table"
       >
         <template v-slot:loading>
           <q-inner-loading showing color="red" />

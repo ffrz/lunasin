@@ -42,6 +42,7 @@ class Transaction extends BaseModel
         'datetime',
         'amount',
         'notes',
+        'image_path',
     ];
 
     /**

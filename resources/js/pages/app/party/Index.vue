@@ -6,7 +6,10 @@ import { getQueryParams } from "@/helpers/utils";
 import { usePageStorage } from "@/composables/usePageStorage";
 import { createOptions } from "@/helpers/options";
 import { formatNumberWithSymbol } from "@/helpers/formatter";
+import LongTextView from "@/components/LongTextView.vue";
+import { useQuasar } from "quasar";
 
+const $q = useQuasar();
 const storage = usePageStorage("party");
 const title = "Pihak-pihak";
 const showFilter = ref(storage.get("show-filter", false));
@@ -34,11 +37,29 @@ const pagination = ref(
 const columns = [
   { name: "name", label: "Nama", field: "name", align: "left", sortable: true },
   {
+    name: "phone",
+    label: "Telepon",
+    field: "phone",
+    align: "left",
+  },
+  {
+    name: "address",
+    label: "Alamat",
+    field: "address",
+    align: "left",
+  },
+  {
     name: "balance",
     label: "Utang / Piutang (Rp)",
     field: "balance",
     align: "right",
     sortable: true,
+  },
+  {
+    name: "notes",
+    label: "Catatan",
+    field: "notes",
+    align: "left",
   },
   { name: "action", align: "right" },
 ];
@@ -81,9 +102,11 @@ const onFilterChange = () => fetchItems();
 const onRowClicked = (row) =>
   router.get(route("app.party.detail", { id: row.id }));
 
-const computedColumns = computed(() => {
-  return columns;
-});
+const computedColumns = computed(() =>
+  $q.screen.gt.sm
+    ? columns
+    : columns.filter((col) => ["name", "balance", "action"].includes(col.name))
+);
 
 watch(showFilter, () => storage.set("show-filter", showFilter.value), {
   deep: true,
@@ -212,6 +235,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
         :rows-per-page-options="[10, 25, 50]"
         @request="fetchItems"
         binary-state-sort
+        class="full-height-table"
       >
         <template v-slot:loading>
           <q-inner-loading showing color="red" />
@@ -240,6 +264,28 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
                 />
                 {{ props.row.name }}
               </div>
+              <template v-if="!$q.screen.gt.sm">
+                <div v-if="props.row.phone">
+                  <q-icon name="phone" /> {{ props.row.phone }}
+                </div>
+                <long-text-view
+                  v-if="props.row.notes"
+                  :text="props.row.notes"
+                  :max-length="50"
+                  icon="home_pin"
+                />
+                <long-text-view
+                  v-if="props.row.address"
+                  :text="props.row.address"
+                  :max-length="50"
+                />
+              </template>
+            </q-td>
+            <q-td key="phone" :props="props">
+              {{ props.row.phone }}
+            </q-td>
+            <q-td key="address" :props="props">
+              <long-text-view :text="props.row.address" :max-length="100" />
             </q-td>
             <q-td
               key="balance"
@@ -247,6 +293,9 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
               :class="props.row.balance >= 0 ? 'text-green' : 'text-red'"
             >
               {{ formatNumberWithSymbol(props.row.balance) }}
+            </q-td>
+            <q-td key="notes" :props="props">
+              <long-text-view :text="props.row.notes" :max-length="100" />
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">

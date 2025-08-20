@@ -43,7 +43,8 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->unsignedBigInteger('party_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
-            $table->string('type', array_keys(Transaction::Types));
+            $table->string('type', 20);
+            $table->string('image_path', 255)->nullable();
             $table->datetime('datetime')->nullable();
             $table->decimal('amount', 12, 2)->default(0.);
             $table->text('notes')->nullable();

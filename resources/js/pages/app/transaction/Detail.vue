@@ -1,13 +1,16 @@
 <script setup>
+import ImageViewer from "@/components/ImageViewer.vue";
 import {
   dateTimeFromNow,
   formatDateTime,
   formatNumberWithSymbol,
 } from "@/helpers/formatter";
 import { router, usePage } from "@inertiajs/vue3";
+import { ref } from "vue";
 
 const page = usePage();
 const title = "Rincian Transaksi";
+const showViewer = ref(false);
 </script>
 
 <template>
@@ -99,6 +102,20 @@ const title = "Rincian Transaksi";
                       {{ page.props.data.notes }}
                     </td>
                   </tr>
+                  <tr v-if="page.props.data.image_path">
+                    <td colspan="3" class="bg-white">
+                      <div class="q-mt-md">
+                        Lampiran:<br />
+                        <q-img
+                          :src="`/${page.props.data.image_path}`"
+                          class="q-mt-none"
+                          style="max-width: 500px"
+                          :style="{ border: '1px solid #ddd' }"
+                          @click="showViewer = true"
+                        />
+                      </div>
+                    </td>
+                  </tr>
                   <tr v-if="page.props.data.created_datetime">
                     <td>Dibuat</td>
                     <td>:</td>
@@ -117,6 +134,10 @@ const title = "Rincian Transaksi";
                   </tr>
                 </tbody>
               </table>
+              <ImageViewer
+                v-model="showViewer"
+                :imageUrl="`/${page.props.data.image_path}`"
+              />
             </q-card-section>
           </q-card>
         </div>

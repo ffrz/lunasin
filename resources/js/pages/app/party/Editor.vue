@@ -49,7 +49,7 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 :rules="[
                   (val) => (val && val.length > 0) || 'Nama harus diisi.',
                 ]"
-                hide-button-space
+                hide-bottom-space
               />
               <q-select
                 v-model="form.type"
@@ -69,7 +69,7 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 :disable="form.processing"
                 :error="!!form.errors.phone"
                 :error-message="form.errors.phone"
-                hide-button-space
+                hide-bottom-space
               />
               <q-input
                 v-model.trim="form.address"
@@ -82,7 +82,7 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 :disable="form.processing"
                 :error="!!form.errors.address"
                 :error-message="form.address"
-                hide-button-space
+                hide-bottom-space
               />
               <q-input
                 v-model.trim="form.notes"
@@ -95,7 +95,7 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 :disable="form.processing"
                 :error="!!form.errors.notes"
                 :error-message="form.errors.notes"
-                hide-button-space
+                hide-bottom-space
               />
               <div style="margin-left: -10px">
                 <q-checkbox

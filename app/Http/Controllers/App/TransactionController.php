@@ -28,6 +28,7 @@
 
 namespace App\Http\Controllers\App;
 
+use App\Helpers\ImageUploaderHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Party;
 use App\Models\Transaction;
@@ -36,9 +37,12 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class TransactionController extends Controller
 {
@@ -128,13 +132,15 @@ class TransactionController extends Controller
     public function save(Request $request)
     {
         $validated = $request->validate([
-            'id'          => 'nullable|exists:transactions,id', // tambahkan ini
+            'id'          => 'nullable|exists:transactions,id',
             'party_id'    => 'required|exists:parties,id',
             'category_id' => 'required|exists:transaction_categories,id',
             'datetime'    => 'required|date',
             'type'        => 'required|in:' . implode(',', array_keys(Transaction::Types)),
             'amount'      => 'required|numeric|min:0.01',
             'notes'       => 'nullable|string|max:255',
+            'image'       => 'nullable|image|max:5120',
+            'image_path'  => 'nullable|string',
         ]);
 
         $validated['notes'] = $validated['notes'] ?? '';
@@ -147,15 +153,22 @@ class TransactionController extends Controller
         }
 
         DB::beginTransaction();
+        $newlyUploadedImagePath = null;
+
         try {
             $party = Party::findOrFail($validated['party_id']);
 
-            if (!empty($validated['id'])) {
-                // Mode edit
-                $existingTx = Transaction::findOrFail($validated['id']);
+            $isUpdating = !empty($validated['id']);
+            $transaction = $isUpdating ? Transaction::findOrFail($validated['id']) : new Transaction();
 
+            // Simpan path gambar lama sebelum potensi perubahan untuk cleanup jika rollback
+            $originalImagePath = $transaction->image_path;
+
+            // --- Logika Update Saldo dan Transaksi Database ---
+            if ($isUpdating) {
+                // Mode edit
                 // Rollback saldo dari transaksi lama
-                $party->balance -= $existingTx->amount;
+                $party->balance -= $transaction->amount;
 
                 // Kalkulasi transaksi baru
                 if ($validated['type'] === Transaction::Type_Adjustment) {
@@ -172,15 +185,6 @@ class TransactionController extends Controller
                     $validated['amount'] = $normalizedAmount;
                     $party->balance += $normalizedAmount;
                 }
-
-                $existingTx->fill($validated);
-                $existingTx->save();
-
-                $party->save();
-
-                DB::commit();
-                return redirect(route('app.transaction.index'))
-                    ->with('success', "Transaksi $existingTx->id telah diperbarui.");
             } else {
                 // Mode create
                 if ($validated['type'] === Transaction::Type_Adjustment) {
@@ -197,21 +201,56 @@ class TransactionController extends Controller
                     $validated['amount'] = $normalizedAmount;
                     $party->balance += $normalizedAmount;
                 }
-
-                $transaction = new Transaction();
-                $transaction->fill($validated);
-                $transaction->save();
-
-                $party->save();
-
-                DB::commit();
-                return redirect(route('app.transaction.index'))
-                    ->with('success', "Transaksi $transaction->id telah disimpan.");
             }
+
+            unset($validated['image']);
+            $validated['image_path'] = '';
+
+            $transaction->fill($validated);
+            $transaction->save();
+
+            // --- Logika Penanganan Gambar (SETELAH data transaksi disimpan ke DB) ---
+            if ($request->hasFile('image')) {
+                // Unggah dan resize gambar baru, hapus gambar lama melalui helper
+                $newlyUploadedImagePath = ImageUploaderHelper::uploadAndResize(
+                    $request->file('image'),
+                    'transactions', // Direktori target
+                    $originalImagePath // Path gambar lama untuk dihapus
+                );
+            } else if ($isUpdating && empty($validated['image_path']) && $originalImagePath) {
+                // Jika tidak ada file baru diunggah, tapi path gambar di frontend kosong (berarti user ingin menghapus gambar lama)
+                ImageUploaderHelper::deleteImage($originalImagePath);
+                $newlyUploadedImagePath = null; // Set path gambar di DB menjadi null
+            } else {
+                // Jika tidak ada gambar baru dan tidak ada penghapusan, pertahankan path gambar asli
+                $newlyUploadedImagePath = $originalImagePath;
+            }
+
+            // Perbarui path gambar di model transaksi jika ada perubahan
+            if ($transaction->image_path !== $newlyUploadedImagePath) {
+                $transaction->image_path = $newlyUploadedImagePath;
+                $transaction->save(); // Simpan kembali transaksi untuk memperbarui image_path di DB
+            }
+
+            $party->save(); // Simpan perubahan saldo pihak
+
+            DB::commit(); // Commit transaksi database
+
+            return redirect(route('app.transaction.index'))
+                ->with('success', "Transaksi $transaction->id telah " . ($isUpdating ? 'diperbarui' : 'disimpan') . ".");
         } catch (\Throwable $e) {
-            DB::rollBack();
-            report($e);
-            return back()->withErrors(['error' => 'Gagal menyimpan transaksi.']);
+            DB::rollBack(); // Rollback transaksi database jika ada error
+
+            // Jika ada gambar baru yang berhasil di-upload, tapi transaksi DB gagal,
+            // maka hapus gambar yang baru di-upload tersebut untuk konsistensi.
+            if ($newlyUploadedImagePath && file_exists(public_path($newlyUploadedImagePath))) {
+                ImageUploaderHelper::deleteImage($newlyUploadedImagePath);
+            }
+
+            throw $e;
+
+            // report($e); // Laporkan exception
+            // return back()->withErrors(['error' => 'Gagal menyimpan transaksi.']);
         }
     }
 
