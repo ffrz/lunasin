@@ -99,17 +99,10 @@ class ReportController extends Controller
         return $this->transactionDetailByType($request, 'payable');
     }
 
-    /**
-     * Helper function to get generate report based on receivable or payable.
-     *
-     * @param Request $request
-     * @param string $type 'receivable' or 'payable'
-     * @return \Illuminate\Support\Collection
-     */
     private function transactionByCategoriesRecap(Request $request, string $type)
     {
         $user = Auth::user();
-        $period = $request->get('period', 'this_month'); // Default to 'this_month'
+        $period = $request->get('period', 'this_year');
         [$start_date, $end_date] = PeriodHelper::resolve(
             $period,
             $request->get('start_date'),
@@ -125,18 +118,17 @@ class ReportController extends Controller
             ->orderBy('transaction_categories.name', 'asc');
 
         if ($type === 'receivable') {
-            $query->where('transactions.amount', '<', 0); // Filter for receivables (negative amounts)
-            [$title] = $this->resolveTitle('Laporan Rekapitulasi Piutang Berdasarkan Kategori');
+            $query->where('transactions.amount', '<', 0);
+            [$title] = $this->resolveTitle('Laporan Rekapitulasi Piutang Berdasarkan Kategori', null);
         } elseif ($type === 'payable') {
-            $query->where('transactions.amount', '>', 0); // Filter for payables (positive amounts)
-            [$title] = $this->resolveTitle('Laporan Rekapitulasi Utang Berdasarkan Kategori');
+            $query->where('transactions.amount', '>', 0);
+            [$title] = $this->resolveTitle('Laporan Rekapitulasi Utang Berdasarkan Kategori', null);
         } else {
             abort(400, 'Invalid recap type.');
         }
 
         $items = $query->get();
 
-        // Ensure total_amount is positive for receivables in the report display
         if ($type === 'receivable') {
             $items->each(function ($item) {
                 $item->total_amount = abs($item->total_amount);
@@ -147,7 +139,7 @@ class ReportController extends Controller
             'report.transaction-categories-recap',
             'portrait',
             compact('items', 'user', 'period', 'start_date', 'end_date', 'title'),
-            'pdf'
+            'html'
         );
     }
 
@@ -197,18 +189,36 @@ class ReportController extends Controller
         ), 'pdf');
     }
 
-    public function globalBalance(Request $request) {}
+    public function actualBalance(Request $request)
+    {
+        $user = Auth::user();
+
+        $parties = Party::where('user_id', $user->id)
+            ->where('active', true)
+            ->get();
+
+        $total_payables = $parties->where('balance', '>', 0)->sum('balance');
+        $total_receivables = abs($parties->where('balance', '<', 0)->sum('balance'));
+        $total_balance = $total_receivables - $total_payables;
+        [$title] = $this->resolveTitle('Laporan Rekap Utang Piutang dan Saldo Aktual', null);
+
+        return $this->generatePdfReport(
+            'report.actual-balance',
+            'portrait',
+            compact('total_balance', 'total_payables', 'total_receivables', 'user', 'title'),
+            'pdf'
+        );
+    }
 
     protected function resolveTitle(string $baseTitle, $party_id = 'all'): array
     {
-        $title = '';
+        $title = $baseTitle;
         $party = null;
-
-        if ($party_id !== 'all') {
+        if ($party_id === 'all') {
+            $title .= " - Semua Pihak";
+        } else if ($party_id !== null) {
             $party = Party::find($party_id);
-            $title = "$baseTitle - $party->name ($party->username)";
-        } else {
-            $title = "$baseTitle - Semua Pihak";
+            $title .= " - $party->name ($party->username)";
         }
 
         return [$title, $party];

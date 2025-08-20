@@ -62,6 +62,7 @@ Route::middleware([Auth::class])->group(function () {
 
         Route::prefix('reports')->group(function () {
             Route::get('', [ReportController::class, 'index'])->name('app.report.index');
+            Route::get('actual-balance', [ReportController::class, 'actualBalance'])->name('app.report.actual-balance');
             Route::get('receivables-detail', [ReportController::class, 'receivablesDetail'])->name('app.report.receivables-detail');
             Route::get('payables-detail', [ReportController::class, 'payablesDetail'])->name('app.report.payables-detail');
             Route::get('receivables-by-categories-recap', [ReportController::class, 'receivablesByCategoriesRecap'])->name('app.report.receivables-by-categories-recap');

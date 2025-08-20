@@ -4,25 +4,27 @@ import DatePicker from "@/components/DatePicker.vue";
 import dayjs from "dayjs";
 import { useApiForm } from "@/composables/useApiForm";
 import { ref, watch, reactive, onMounted } from "vue";
+import SelectWithSeparator from "@/components/SelectWithSeparator.vue";
 
 const page = usePage();
 const title = "Laporan";
 const form = useApiForm({
   preview: true,
   report_type: page.props.report_type ?? null,
-  user_id: "all",
   period: "this_year",
+  party_id: "all",
   start_date: dayjs().format("YYYY-MM-DD"),
   end_date: dayjs().format("YYYY-MM-DD"),
 });
 
 const filter_options = reactive({
-  show_user: false,
   show_period: false,
+  show_party: false,
 });
 
 const report_types = [
-  { value: "global-balance", label: "Laporan Rekap Utang Piutang dan Saldo" },
+  { value: "actual-balance", label: "Laporan Rekap Utang Piutang dan Saldo" },
+  { separator: true },
   {
     value: "parties-payables",
     label: "Laporan Daftar Utang",
@@ -31,8 +33,10 @@ const report_types = [
     value: "parties-receivables",
     label: "Laporan Daftar Piutang",
   },
+  { separator: true },
   { value: "payables-detail", label: "Laporan Rincian Utang" },
   { value: "receivables-detail", label: "Laporan Rincian Piutang" },
+  { separator: true },
   {
     value: "payables-by-categories-recap",
     label: "Laporan Rekap Utang per Kategori",
@@ -45,26 +49,16 @@ const report_types = [
 
 const period_options = ref([
   { value: "custom", label: "Custom" },
-  // { value: "today", label: "Hari Ini" },
-  // { value: "yesterday", label: "Kemarin" },
-  // { value: "this_week", label: "Minggu Ini" },
-  // { value: "last_week", label: "Minggu Lalu" },
   { value: "this_month", label: "Bulan Ini" },
   { value: "last_month", label: "Bulan Lalu" },
   { value: "this_year", label: "Tahun Ini" },
   { value: "last_year", label: "Tahun Lalu" },
-  // { value: "last_7_days", label: "7 Hari Terakhir" },
-  // { value: "last_30_days", label: "30 Hari Terakhir" },
 ]);
 
 const submit = () => {
   if (!validate()) return;
 
   const query = new URLSearchParams();
-  if (filter_options.show_user) {
-    query.append("user_id", form.user_id);
-  }
-
   if (filter_options.show_period) {
     query.append("period", form.period);
   }
@@ -98,19 +92,16 @@ const validate = () => {
     const start = new Date(form.start_date);
     const end = new Date(form.end_date);
 
-    // Validasi start_date
     if (!form.start_date || isNaN(start.getTime())) {
       form.errors.start_date = "Tanggal awal tidak valid atau kosong!";
       is_valid = false;
     }
 
-    // Validasi end_date
     if (!form.end_date || isNaN(end.getTime())) {
       form.errors.end_date = "Tanggal akhir tidak valid atau kosong!";
       is_valid = false;
     }
 
-    // Validasi urutan tanggal
     if (
       form.start_date &&
       form.end_date &&
@@ -123,14 +114,6 @@ const validate = () => {
       }
     }
   }
-
-  form.errors.user_id = null;
-  // if (form.report_type == 'sales-activity-detail') {
-  //   if (form.user_id == 'all') {
-  //     is_valid = false;
-  //     form.errors.user_id = 'Pilih Sales terlebih dahulu!';
-  //   }
-  // }
 
   return is_valid;
 };
@@ -156,17 +139,6 @@ function updateState() {
   ) {
     filter_options.show_period = true;
   }
-  // else if ([
-  // ].includes(form.report_type)
-  // ) {
-  //   filter_options.show_period = true;
-  // }
-  // else if ([
-  //   'client-history',
-  // ].includes(form.report_type)) {
-  //   filter_options.show_period = true;
-  // }
-
   validate();
 }
 
@@ -175,12 +147,10 @@ onMounted(() => updateState());
 watch(
   () => [
     form.report_type,
-    form.user_id,
-    form.service_id,
     form.period,
     form.start_date,
     form.end_date,
-    form.client_id,
+    form.party_id,
   ],
   () => updateState()
 );
@@ -198,28 +168,16 @@ watch(
               <q-spinner size="50px" color="primary" />
             </q-inner-loading>
             <q-card-section class="q-pt-none">
-              <q-select
+              <select-with-separator
                 v-model="form.report_type"
                 label="Jenis Laporan"
                 :options="report_types"
-                map-options
-                emit-value
                 :error="!!form.errors.report_type"
                 :disable="form.processing"
-                behavior="menu"
                 :error-message="form.errors.report_type"
+                hide-bottom-space
               />
-              <q-select
-                v-if="filter_options.show_user"
-                v-model="form.user_id"
-                label="Sales"
-                :options="users"
-                map-options
-                emit-value
-                :error="!!form.errors.user_id"
-                :disable="form.processing"
-                :error-message="form.errors.user_id"
-              />
+
               <q-select
                 v-if="filter_options.show_period"
                 class="custom-select col-12"
@@ -231,8 +189,12 @@ watch(
                 emit-value
                 :error="!!form.errors.period"
                 :disable="form.processing"
+                hide-bottom-space
               />
-              <div class="row q-gutter-md" v-if="form.period == 'custom'">
+              <div
+                class="row q-gutter-md"
+                v-if="filter_options.show_period && form.period == 'custom'"
+              >
                 <div class="col">
                   <date-picker
                     v-model="form.start_date"
@@ -245,6 +207,7 @@ watch(
                       (val) =>
                         (val && val.length > 0) || 'Tanggal awal harus diisi.',
                     ]"
+                    hide-bottom-space
                   />
                 </div>
                 <div class="col">
@@ -259,6 +222,7 @@ watch(
                       (val) =>
                         (val && val.length > 0) || 'Tanggal akhir harus diisi.',
                     ]"
+                    hide-bottom-space
                   />
                 </div>
               </div>
@@ -287,3 +251,9 @@ watch(
     </div>
   </authenticated-layout>
 </template>
+<style scope="local">
+.separator {
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+</style>
