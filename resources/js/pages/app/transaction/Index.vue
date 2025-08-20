@@ -273,6 +273,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
             map-options
             emit-value
             clearable
+            @update:model-value="onFilterChange"
           >
           </q-select>
           <q-select
@@ -288,6 +289,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
             map-options
             emit-value
             clearable
+            @update:model-value="onFilterChange"
           >
           </q-select>
 
