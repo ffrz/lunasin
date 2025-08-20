@@ -51,7 +51,7 @@ Route::middleware(NonAuthenticated::class)->group(function () {
 });
 
 Route::middleware([Auth::class])->group(function () {
-    Route::prefix('admin')->group(function () {
+    Route::prefix('app')->group(function () {
         Route::redirect('', 'app/dashboard', 301);
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('app.dashboard');
