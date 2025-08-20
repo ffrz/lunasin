@@ -51,6 +51,14 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function detail($id = 0)
+    {
+        $item = Transaction::with(['party:id,name', 'category:id,name'])->findOrFail($id);
+        return inertia('app/transaction/Detail', [
+            'data' => $item,
+        ]);
+    }
+
     public function data(Request $request)
     {
         $orderBy = $request->get('order_by', 'id');

@@ -123,7 +123,11 @@ const computedColumns = computed(() =>
       </template>
 
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <q-tr
+          :props="props"
+          @click="onRowClicked(props.row)"
+          class="cursor-pointer"
+        >
           <q-td key="datetime" :props="props" class="wrap-column">
             <div>
               <q-icon v-if="!$q.screen.gt.sm" name="calendar_today" />

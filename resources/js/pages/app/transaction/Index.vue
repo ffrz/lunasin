@@ -160,6 +160,9 @@ const computedColumns = computed(() => {
   );
 });
 
+const onRowClicked = (row) =>
+  router.get(route("app.transaction.detail", { id: row.id }));
+
 watch(
   () => filter.year,
   (newVal) => {
@@ -341,7 +344,11 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
           </div>
         </template>
         <template v-slot:body="props">
-          <q-tr :props="props">
+          <q-tr
+            :props="props"
+            @click="onRowClicked(props.row)"
+            class="cursor-pointer"
+          >
             <q-td key="datetime" :props="props" class="wrap-column">
               <div>
                 <q-icon v-if="!$q.screen.gt.sm" name="calendar_today" />

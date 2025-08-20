@@ -96,7 +96,7 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
           color="grey-7"
           flat
           rounded
-          @click="$inertia.get(route('app.transaction.index'))"
+          @click="$goBack()"
         />
       </div>
     </template>
@@ -131,7 +131,14 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
               <q-select
                 class="custom-select"
                 v-model="form.party_id"
-                :label="form.type == 'debt' ? 'Dari' : 'Ke'"
+                :label="
+                  form.type == 'adjustment'
+                    ? 'Ke / Dari'
+                    : form.type == 'loan_given' ||
+                      form.type == 'payable_payment'
+                    ? 'Ke'
+                    : 'Dari'
+                "
                 :options="filteredParties"
                 @filter="filterParties"
                 use-input
@@ -188,6 +195,7 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
                 :error="!!form.errors.amount"
                 :errorMessage="form.errors.amount"
                 :rules="[]"
+                :allowNegative="form.type == 'adjustment'"
                 hide-button-space
               />
               <q-input

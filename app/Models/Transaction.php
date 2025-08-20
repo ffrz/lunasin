@@ -2,21 +2,21 @@
 
 /**
  * MIT License
- * 
+ *
  * Copyright (c) 2025 Fahmi Fauzi Rahman
  * GitHub: https://github.com/ffrz
  * Email: fahmifauzirahman@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -47,24 +47,28 @@ class Transaction extends BaseModel
     /**
      * Transaction types.
      */
-    const Type_Debt = 'debt';
-    const Type_Credit = 'credit';
+    const Type_LoanGiven = 'loan_given';
+    const Type_ReceivablePayment = 'receivable_payment';
+    const Type_LoanReceived = 'loan_received';
+    const Type_PayablePayment = 'payable_payment';
     const Type_Adjustment = 'adjustment';
 
     const Types = [
-        self::Type_Debt => '(+) Berutang / Terima Bayar Utang',
-        self::Type_Credit => '(-) Bayar Utang / Beri Piutang',
-        self::Type_Adjustment => 'Penyesuaian',
+        self::Type_LoanGiven => '(-) Memberi Pinjaman / Piutang', // Anda memberi pinjaman ke pihak lain
+        self::Type_ReceivablePayment => '(+) Terima Bayar Piutang', // Anda menerima bayaran dari piutang Anda
+        self::Type_LoanReceived => '(+) Menerima Pinjaman', // Anda menerima pinjaman dari pihak lain
+        self::Type_PayablePayment => '(-) Bayar Utang', // Anda membayar utang Anda
+        self::Type_Adjustment => '(+/-) Penyesuaian',
     ];
 
     public static function isPositiveTransaction($type): bool
     {
-        return $type === self::Type_Debt; // Uang Masuk
+        return $type === self::Type_ReceivablePayment || $type == self::Type_LoanReceived; // Uang Masuk
     }
 
     public static function isNegativeTransaction($type): bool
     {
-        return $type === self::Type_Credit; // Uang Keluar
+        return $type === self::Type_LoanGiven || $type == self::Type_PayablePayment; // Uang Keluar
     }
 
     protected function casts(): array
