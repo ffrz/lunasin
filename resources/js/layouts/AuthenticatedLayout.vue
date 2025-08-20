@@ -216,17 +216,14 @@ onMounted(() => {
 
           <q-item
             clickable
-            v-close-popup
             v-ripple
-            style="color: inherit"
-            :href="route('app.auth.logout')"
+            @click="router.get(route('app.auth.logout'))"
           >
+            <q-item-section avatar>
+              <q-icon name="logout" />
+            </q-item-section>
             <q-item-section>
-              <q-item-label
-                ><q-icon name="logout" class="q-mr-sm" />{{
-                  $t("logout")
-                }}</q-item-label
-              >
+              <q-item-label>{{ $t("logout") }}</q-item-label>
             </q-item-section>
           </q-item>
 
