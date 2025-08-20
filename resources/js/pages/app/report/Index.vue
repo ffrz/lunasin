@@ -11,7 +11,7 @@ const form = useApiForm({
   preview: true,
   report_type: page.props.report_type ?? null,
   user_id: "all",
-  period: "this_month",
+  period: "this_year",
   start_date: dayjs().format("YYYY-MM-DD"),
   end_date: dayjs().format("YYYY-MM-DD"),
 });
@@ -22,9 +22,7 @@ const filter_options = reactive({
 });
 
 const report_types = [
-  { value: "payables-detail", label: "Laporan Rincian Utang" },
-  { value: "receivables-detail", label: "Laporan Rincian Piutang" },
-  { value: "transaction-recap", label: "Laporan Rekapitulasi Transaksi" },
+  { value: "global-balance", label: "Laporan Rekap Utang Piutang dan Saldo" },
   {
     value: "parties-payables",
     label: "Laporan Daftar Utang",
@@ -33,21 +31,30 @@ const report_types = [
     value: "parties-receivables",
     label: "Laporan Daftar Piutang",
   },
-  { value: "global-balance", label: "Laporan Saldo Bersih" },
+  { value: "payables-detail", label: "Laporan Rincian Utang" },
+  { value: "receivables-detail", label: "Laporan Rincian Piutang" },
+  {
+    value: "payables-by-categories-recap",
+    label: "Laporan Rekap Utang per Kategori",
+  },
+  {
+    value: "receivables-by-categories-recap",
+    label: "Laporan Rekap Piutang per Kategori",
+  },
 ];
 
 const period_options = ref([
   { value: "custom", label: "Custom" },
-  { value: "today", label: "Hari Ini" },
-  { value: "yesterday", label: "Kemarin" },
-  { value: "this_week", label: "Minggu Ini" },
-  { value: "last_week", label: "Minggu Lalu" },
+  // { value: "today", label: "Hari Ini" },
+  // { value: "yesterday", label: "Kemarin" },
+  // { value: "this_week", label: "Minggu Ini" },
+  // { value: "last_week", label: "Minggu Lalu" },
   { value: "this_month", label: "Bulan Ini" },
   { value: "last_month", label: "Bulan Lalu" },
   { value: "this_year", label: "Tahun Ini" },
   { value: "last_year", label: "Tahun Lalu" },
-  { value: "last_7_days", label: "7 Hari Terakhir" },
-  { value: "last_30_days", label: "30 Hari Terakhir" },
+  // { value: "last_7_days", label: "7 Hari Terakhir" },
+  // { value: "last_30_days", label: "30 Hari Terakhir" },
 ]);
 
 const submit = () => {
@@ -139,9 +146,13 @@ function updateState() {
   }
 
   if (
-    ["payables-detail", "receivables-detail", "transaction-recap"].includes(
-      form.report_type
-    )
+    [
+      "payables-detail",
+      "receivables-detail",
+      "transaction-recap",
+      "receivables-by-categories-recap",
+      "payables-by-categories-recap",
+    ].includes(form.report_type)
   ) {
     filter_options.show_period = true;
   }

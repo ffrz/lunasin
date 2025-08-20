@@ -99,7 +99,67 @@ class ReportController extends Controller
         return $this->transactionDetailByType($request, 'payable');
     }
 
-    public function transactionRecap(Request $request) {}
+    /**
+     * Helper function to get generate report based on receivable or payable.
+     *
+     * @param Request $request
+     * @param string $type 'receivable' or 'payable'
+     * @return \Illuminate\Support\Collection
+     */
+    private function transactionByCategoriesRecap(Request $request, string $type)
+    {
+        $user = Auth::user();
+        $period = $request->get('period', 'this_month'); // Default to 'this_month'
+        [$start_date, $end_date] = PeriodHelper::resolve(
+            $period,
+            $request->get('start_date'),
+            $request->get('end_date')
+        );
+
+        $query = DB::table('transactions')
+            ->join('transaction_categories', 'transactions.category_id', '=', 'transaction_categories.id')
+            ->select('transaction_categories.name as category_name', DB::raw('SUM(transactions.amount) as total_amount'))
+            ->where('transactions.user_id', $user->id)
+            ->whereBetween('transactions.datetime', [$start_date, $end_date])
+            ->groupBy('transactions.category_id', 'transaction_categories.name')
+            ->orderBy('transaction_categories.name', 'asc');
+
+        if ($type === 'receivable') {
+            $query->where('transactions.amount', '<', 0); // Filter for receivables (negative amounts)
+            [$title] = $this->resolveTitle('Laporan Rekapitulasi Piutang Berdasarkan Kategori');
+        } elseif ($type === 'payable') {
+            $query->where('transactions.amount', '>', 0); // Filter for payables (positive amounts)
+            [$title] = $this->resolveTitle('Laporan Rekapitulasi Utang Berdasarkan Kategori');
+        } else {
+            abort(400, 'Invalid recap type.');
+        }
+
+        $items = $query->get();
+
+        // Ensure total_amount is positive for receivables in the report display
+        if ($type === 'receivable') {
+            $items->each(function ($item) {
+                $item->total_amount = abs($item->total_amount);
+            });
+        }
+
+        return $this->generatePdfReport(
+            'report.transaction-categories-recap',
+            'portrait',
+            compact('items', 'user', 'period', 'start_date', 'end_date', 'title'),
+            'pdf'
+        );
+    }
+
+    public function receivablesByCategoriesRecap(Request $request)
+    {
+        return $this->transactionByCategoriesRecap($request, 'receivable');
+    }
+
+    public function payablesByCategoriesRecap(Request $request)
+    {
+        return $this->transactionByCategoriesRecap($request, 'payable');
+    }
 
     public function partiesPayables(Request $request)
     {
@@ -118,6 +178,7 @@ class ReportController extends Controller
             'title',
         ), 'pdf');
     }
+
     public function partiesReceivables(Request $request)
     {
         $user = Auth::user();
