@@ -3,6 +3,8 @@
 **Lunasin** adalah aplikasi web berbasis **Laravel + Inertia.js + Quasar** untuk **manajemen utang-piutang pribadi**.  
 Aplikasi ini membantu pengguna mencatat, mengelola, dan menganalisis utang-piutang dengan mudah, cepat, dan rapi.
 
+Aplikasi ini bisa diakses di https://lunasin.shift-apps.my.id
+
 ---
 
 ## ✨ Fitur Utama
