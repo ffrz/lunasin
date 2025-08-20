@@ -77,6 +77,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('add', [TransactionController::class, 'editor'])->name('app.transaction.add');
             Route::get('edit/{id}', [TransactionController::class, 'editor'])->name('app.transaction.edit');
             Route::get('detail/{id}', [TransactionController::class, 'detail'])->name('app.transaction.detail');
+            Route::get('duplicate/{id}', [TransactionController::class, 'duplicate'])->name('app.transaction.duplicate');
             Route::post('save', [TransactionController::class, 'save'])->name('app.transaction.save');
             Route::post('delete/{id}', [TransactionController::class, 'delete'])->name('app.transaction.delete');
             Route::get('export', [TransactionController::class, 'export'])->name('app.transaction.export');

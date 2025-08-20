@@ -69,7 +69,7 @@ const submit = () =>
                 icon="cancel"
                 label="Batal"
                 :disable="form.processing"
-                @click="router.get(route('app.transaction-category.index'))"
+                @click="$goBack()"
               />
             </q-card-section>
           </q-card>

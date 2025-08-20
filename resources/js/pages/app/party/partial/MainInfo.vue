@@ -24,7 +24,7 @@ const page = usePage();
         <td>{{ $CONSTANTS.PARTY_TYPES[page.props.data.type] }}</td>
       </tr>
       <tr>
-        <td>Utang / Piutang</td>
+        <td>Total {{ page.props.data.balance >= 0 ? "Piutang" : "Utang" }}</td>
         <td>:</td>
         <td :class="page.props.data.balance >= 0 ? 'text-green' : 'text-red'">
           Rp.
@@ -57,18 +57,6 @@ const page = usePage();
         <td>
           {{ dateTimeFromNow(page.props.data.created_datetime) }} -
           {{ formatDateTime(page.props.data.created_datetime) }}
-          <!-- <template v-if="page.props.data.created_by_user">
-            oleh
-            <my-link
-              :href="
-                route('app.user.detail', {
-                  id: page.props.data.created_by_user.id,
-                })
-              "
-            >
-              {{ page.props.data.created_by_user.email }}
-            </my-link>
-          </template> -->
         </td>
       </tr>
       <tr v-if="page.props.data.updated_datetime">
@@ -77,18 +65,6 @@ const page = usePage();
         <td>
           {{ dateTimeFromNow(page.props.data.updated_datetime) }} -
           {{ formatDateTime(page.props.data.updated_datetime) }}
-          <!-- <template v-if="page.props.data.updated_by_user">
-            oleh
-            <my-link
-              :href="
-                route('app.user.detail', {
-                  id: page.props.data.updated_by_user.id,
-                })
-              "
-            >
-              {{ page.props.data.updated_by_user.email }}
-            </my-link>
-          </template> -->
         </td>
       </tr>
     </tbody>

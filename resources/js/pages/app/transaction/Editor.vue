@@ -217,7 +217,7 @@ const submit = () => handleSubmit({ form, url: route("app.transaction.save") });
                 icon="cancel"
                 label="Batal"
                 :disable="form.processing"
-                @click="router.get(route('app.transaction.index'))"
+                @click="$goBack()"
               />
             </q-card-section>
           </q-card>

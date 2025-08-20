@@ -2,7 +2,7 @@
 import { router, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 import MainInfo from "./partial/MainInfo.vue";
-//import OrderHistory from "./partial/OrderHistory.vue";
+import TransactionHistory from "./partial/TransactionHistory.vue";
 
 const page = usePage();
 const title = "Rincian Pihak";
@@ -21,7 +21,7 @@ const tab = ref("main");
           color="grey-7"
           flat
           rounded
-          @click="router.get(route('app.party.index'))"
+          @click="$goBack()"
         />
       </div>
     </template>
@@ -44,15 +44,15 @@ const tab = ref("main");
             <q-card-section>
               <q-tabs v-model="tab" align="left">
                 <q-tab name="main" label="Info Utama" />
-                <!-- <q-tab name="history" label="Riwayat PO" /> -->
+                <q-tab name="history" label="Riwayat Transaksi" />
               </q-tabs>
               <q-tab-panels v-model="tab">
                 <q-tab-panel name="main">
                   <main-info />
                 </q-tab-panel>
-                <!-- <q-tab-panel name="history" class="q-pa-none q-pt-sm">
-                  <order-history class="q-pa-none q-ma-none" />
-                </q-tab-panel> -->
+                <q-tab-panel name="history" class="q-pa-none q-pt-sm">
+                  <transaction-history class="q-pa-none q-ma-none" />
+                </q-tab-panel>
               </q-tab-panels>
             </q-card-section>
           </q-card>
