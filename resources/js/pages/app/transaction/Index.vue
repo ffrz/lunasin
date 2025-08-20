@@ -150,6 +150,9 @@ const fetchItems = (props = null) => {
 };
 
 const onFilterChange = () => {
+  if (filter.year === "all") {
+    filter.month = "all";
+  }
   fetchItems();
 };
 
@@ -263,7 +266,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
             class="custom-select col-xs-6 col-sm-2"
             emit-value
             map-options
-            :disable="filter.year === null"
+            :disable="filter.year === null || filter.year === 'all'"
             @update:model-value="onFilterChange"
           />
           <q-select
@@ -291,7 +294,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
           <q-select
             v-model="filter.type"
             :options="types"
-            label="Jenis"
+            label="Jenis Transaksi"
             dense
             class="custom-select col-xs-6 col-sm-2"
             map-options
