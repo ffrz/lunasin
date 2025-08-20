@@ -2,7 +2,7 @@ import { ref } from 'vue';
 
 export function usePartyFilter(partiesRaw, includeAllOption = false) {
   const baseParties = partiesRaw.map((item) => {
-    return { value: item.id, label: '#' + item.id + ' - ' + item.name };
+    return { value: item.id, label: item.name };
   });
 
   const parties = includeAllOption
@@ -11,7 +11,7 @@ export function usePartyFilter(partiesRaw, includeAllOption = false) {
 
   const filteredParties = ref([...parties]);
 
-  const filterPartiesFn = (val, update) => {
+  const filterParties = (val, update) => {
     update(() => {
       filteredParties.value = parties.filter(item =>
         item.label.toLowerCase().includes(val.toLowerCase())
@@ -21,7 +21,7 @@ export function usePartyFilter(partiesRaw, includeAllOption = false) {
 
   return {
     filteredParties,
-    filterPartiesFn,
+    filterParties,
     parties,
   };
 }

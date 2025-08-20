@@ -8,6 +8,8 @@ import DateTimePicker from "@/components/DateTimePicker.vue";
 import QuickAddDialog from "@/components/QuickAddDialog.vue";
 import dayjs from "dayjs";
 import { useQuasar } from "quasar"; // Menambahkan useQuasar
+import { useTransactionCategoryFilter } from "@/composables/useTransactionCategoryFilter";
+import { usePartyFilter } from "@/composables/usePartyFilter";
 
 const page = usePage();
 const title = (!!page.props.data.id ? "Edit" : "Catat") + " Transaksi";
@@ -32,39 +34,10 @@ const openQuickAddDialog = (type) => {
   isQuickAddDialogVisible.value = true;
 };
 
-const parties = ref(
-  page.props.parties.map((party) => ({
-    label: party.name,
-    value: party.id,
-  }))
+const { filteredCategories, filterCategories } = useTransactionCategoryFilter(
+  page.props.categories
 );
-
-const categories = ref(
-  page.props.categories.map((cat) => ({
-    label: cat.name,
-    value: cat.id,
-  }))
-);
-
-const filteredCategories = ref([...categories.value]);
-const filterCategories = (val, update) => {
-  update(() => {
-    const search = val?.toLowerCase() ?? "";
-    filteredCategories.value = search
-      ? categories.value.filter((c) => c.label.toLowerCase().includes(search))
-      : [...categories.value];
-  });
-};
-
-const filteredParties = ref([...parties.value]);
-const filterParties = (val, update) => {
-  update(() => {
-    const search = val?.toLowerCase() ?? "";
-    filteredParties.value = search
-      ? parties.value.filter((p) => p.label.toLowerCase().includes(search))
-      : [...parties.value];
-  });
-};
+const { filteredParties, filterParties } = usePartyFilter(page.props.parties);
 
 const types = Object.entries(window.CONSTANTS.TRANSACTION_TYPES).map(
   ([value, label]) => ({

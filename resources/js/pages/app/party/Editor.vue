@@ -12,7 +12,7 @@ const form = useForm({
   id: page.props.data.id,
   name: page.props.data.name,
   phone: page.props.data.phone,
-  type: page.props.data.type,
+  type: page.props.data.type ? page.props.data.type : "personal",
   address: page.props.data.address,
   notes: page.props.data.notes,
   active: !!page.props.data.active,

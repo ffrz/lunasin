@@ -7,6 +7,8 @@ import { useQuasar } from "quasar";
 import { createMonthOptions, createYearOptions } from "@/helpers/options";
 import { formatDateTime, formatNumberWithSymbol } from "@/helpers/formatter";
 import { usePageStorage } from "@/composables/usePageStorage";
+import { usePartyFilter } from "@/composables/usePartyFilter";
+import { useTransactionCategoryFilter } from "@/composables/useTransactionCategoryFilter";
 
 const storage = usePageStorage("transaction");
 const title = "Transaksi";
@@ -30,25 +32,14 @@ const months = [
   ...createMonthOptions(),
 ];
 
-const categories = [
-  { value: "all", label: "Semua Kategori" },
-  ...page.props.categories.map((cat) => {
-    return {
-      label: cat.name,
-      value: cat.id,
-    };
-  }),
-];
-
-const parties = [
-  { value: "all", label: "Semua Pihak" },
-  ...page.props.parties.map((party) => {
-    return {
-      label: party.name,
-      value: party.id,
-    };
-  }),
-];
+const { filteredCategories, filterCategories } = useTransactionCategoryFilter(
+  page.props.categories,
+  true
+);
+const { filteredParties, filterParties } = usePartyFilter(
+  page.props.parties,
+  true
+);
 
 const types = [
   { value: "all", label: "Semua Jenis" },
@@ -252,7 +243,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
             label="Tahun"
             dense
             outlined
-            class="custom-select col-xs-6 col-sm-2"
+            class="custom-select col-xs-12 col-md-4 col-sm-6"
             emit-value
             map-options
             @update:model-value="onFilterChange"
@@ -263,40 +254,49 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
             label="Bulan"
             dense
             outlined
-            class="custom-select col-xs-6 col-sm-2"
+            class="custom-select col-xs-12 col-md-4 col-sm-6"
             emit-value
             map-options
             :disable="filter.year === null || filter.year === 'all'"
             @update:model-value="onFilterChange"
           />
           <q-select
+            dense
+            outlined
+            class="custom-select col-xs-12 col-md-4 col-sm-6"
             v-model="filter.party_id"
-            :options="parties"
             label="Pihak"
-            dense
-            class="custom-select col-xs-6 col-sm-2"
+            :options="filteredParties"
+            @filter="filterParties"
+            use-input
+            input-debounce="300"
             map-options
             emit-value
-            outlined
-            @update:model-value="onFilterChange"
-          />
+            clearable
+          >
+          </q-select>
           <q-select
-            v-model="filter.category_id"
-            :options="categories"
-            label="Kategori"
             dense
-            class="custom-select col-xs-6 col-sm-2"
+            outlined
+            class="custom-select col-xs-12 col-md-4 col-sm-6"
+            v-model="filter.category_id"
+            label="Kategori"
+            :options="filteredCategories"
+            @filter="filterCategories"
+            use-input
+            input-debounce="300"
             map-options
             emit-value
-            outlined
-            @update:model-value="onFilterChange"
-          />
+            clearable
+          >
+          </q-select>
+
           <q-select
             v-model="filter.type"
             :options="types"
             label="Jenis Transaksi"
             dense
-            class="custom-select col-xs-6 col-sm-2"
+            class="custom-select col-xs-12 col-md-4 col-sm-6"
             map-options
             emit-value
             outlined
