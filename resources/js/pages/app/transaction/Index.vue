@@ -9,6 +9,7 @@ import { formatDateTime, formatNumberWithSymbol } from "@/helpers/formatter";
 import { usePageStorage } from "@/composables/usePageStorage";
 import { usePartyFilter } from "@/composables/usePartyFilter";
 import { useTransactionCategoryFilter } from "@/composables/useTransactionCategoryFilter";
+import LongTextView from "@/components/LongTextView.vue";
 
 const storage = usePageStorage("transaction");
 const title = "Transaksi";
@@ -384,7 +385,11 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
                   </span>
                 </div>
                 <div v-if="props.row.notes">
-                  <q-icon name="notes" /> {{ props.row.notes }}
+                  <long-text-view
+                    v-if="props.row.notes"
+                    :text="props.row.notes"
+                    :max-length="50"
+                  />
                 </div>
               </template>
             </q-td>
@@ -406,7 +411,11 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
               {{ formatNumberWithSymbol(props.row.amount) }}
             </q-td>
             <q-td key="notes" :props="props">
-              {{ props.row.notes }}
+              <long-text-view
+                v-if="props.row.notes"
+                :text="props.row.notes"
+                :max-length="50"
+              />
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">
