@@ -60,6 +60,7 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 :error="!!form.errors.type"
                 :disable="form.processing"
                 :error-message="form.errors.type"
+                hide-bottom-space
               />
               <q-input
                 v-model.trim="form.phone"
@@ -75,7 +76,6 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 v-model.trim="form.address"
                 type="textarea"
                 autogrow
-                counter
                 maxlength="255"
                 label="Alamat"
                 lazy-rules
@@ -88,7 +88,6 @@ const submit = () => handleSubmit({ form, url: route("app.party.save") });
                 v-model.trim="form.notes"
                 type="textarea"
                 autogrow
-                counter
                 maxlength="255"
                 label="Catatan"
                 lazy-rules

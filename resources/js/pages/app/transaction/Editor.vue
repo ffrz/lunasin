@@ -241,7 +241,6 @@ onMounted(() => {
                 v-model.trim="form.notes"
                 type="textarea"
                 autogrow
-                counter
                 maxlength="255"
                 label="Keterangan"
                 lazy-rules

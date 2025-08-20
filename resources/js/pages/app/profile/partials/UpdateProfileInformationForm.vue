@@ -31,6 +31,7 @@ const submit = () => handleSubmit({ form, url: route("app.profile.update") });
           v-model="form.email"
           label="Alamat Email"
           :disable="form.processing"
+          hide-bottom-space
         />
         <q-input
           v-model.trim="form.name"
@@ -40,6 +41,7 @@ const submit = () => handleSubmit({ form, url: route("app.profile.update") });
           :error="!!form.errors.name"
           :error-message="form.errors.name"
           :rules="[(val) => (val && val.length > 0) || 'Name harus diisi.']"
+          hide-bottom-space
         />
       </q-card-section>
       <q-card-section>
