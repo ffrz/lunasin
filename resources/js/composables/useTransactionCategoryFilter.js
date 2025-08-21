@@ -13,11 +13,19 @@ export function useTransactionCategoryFilter(rawCategories, includeAllOption = f
   const filteredCategories = ref([...categories]);
 
   const filterCategories = (val, update) => {
-    const search = val.toLowerCase();
     update(() => {
-      filteredCategories.value = categories.filter(item =>
-        item.label.toLowerCase().includes(search)
+      const needle = val.toLowerCase();
+      const filteredList = categories.filter(
+        (p) => p.label.toLowerCase().indexOf(needle) > -1
       );
+
+      filteredList.unshift({
+        label: `Tambah Kategori Baru "${val}"...`,
+        value: "new_category",
+        inputValue: val
+      });
+
+      filteredCategories.value = filteredList;
     });
   };
 

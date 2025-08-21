@@ -1,6 +1,6 @@
 <script setup>
 import { router, useForm, usePage } from "@inertiajs/vue3";
-import { ref, onMounted } from "vue"; // Menambahkan onMounted
+import { ref, onMounted, watch } from "vue"; // Menambahkan onMounted
 import { handleSubmit } from "@/helpers/client-req-handler";
 import { scrollToFirstErrorField } from "@/helpers/utils";
 import LocaleNumberInput from "@/components/LocaleNumberInput.vue";
@@ -16,21 +16,44 @@ const title = (!!page.props.data.id ? "Edit" : "Catat") + " Transaksi";
 const isQuickAddDialogVisible = ref(false);
 const quickAddEntityType = ref(null);
 
+const form = useForm({
+  id: page.props.data.id,
+  party_id: page.props.data.party_id,
+  category_id: page.props.data.category_id,
+  type: page.props.data.type,
+  datetime: dayjs(page.props.data.datetime).format("YYYY-MM-DD HH:mm:ss"),
+  notes: page.props.data.notes,
+  amount: parseFloat(page.props.data.amount),
+  // --- START: Penambahan form data untuk Image ---
+  image_path: page.props.data.image_path,
+  image: null,
+  // --- END: Penambahan form data untuk Image ---
+});
+
 const handleEntityCreated = (newEntity) => {
-  router.reload({
-    only: ["parties", "categories"],
-    onSuccess: () => {
-      if (quickAddEntityType.value === "party") {
-        form.party_id = newEntity.value;
-      } else if (quickAddEntityType.value === "category") {
-        form.category_id = newEntity.value;
-      }
-    },
-  });
+  if (quickAddEntityType.value === "party") {
+    filteredParties.value.unshift({
+      label: newEntity.name,
+      value: newEntity.id,
+    });
+    form.party_id = newEntity.id; // langsung pilih yg baru
+  } else if (quickAddEntityType.value === "category") {
+    filteredCategories.value.unshift({
+      label: newEntity.name,
+      value: newEntity.id,
+    });
+    form.category_id = newEntity.id;
+  }
+
+  isQuickAddDialogVisible.value = false;
 };
 
-const openQuickAddDialog = (type) => {
+// Di halaman form utama .vue
+const quickAddInitialValue = ref("");
+
+const openQuickAddDialog = (type, initialValue = "") => {
   quickAddEntityType.value = type;
+  quickAddInitialValue.value = initialValue; // Set nilai awal
   isQuickAddDialogVisible.value = true;
 };
 
@@ -38,6 +61,44 @@ const { filteredCategories, filterCategories } = useTransactionCategoryFilter(
   page.props.categories
 );
 const { filteredParties, filterParties } = usePartyFilter(page.props.parties);
+
+const previousPartyId = ref(form.party_id);
+const previousCategoryId = ref(form.category_id);
+
+watch(
+  () => form.party_id,
+  (newValue, oldValue) => {
+    if (newValue !== "new_party") {
+      previousPartyId.value = oldValue;
+    }
+
+    if (newValue === "new_party") {
+      const partyOption = filteredParties.value.find(
+        (p) => p.value === "new_party"
+      );
+      openQuickAddDialog("party", partyOption?.inputValue ?? "");
+
+      form.party_id = previousPartyId.value;
+    }
+  }
+);
+
+watch(
+  () => form.category_id,
+  (newValue, oldValue) => {
+    if (newValue !== "new_category") {
+      previousCategoryId.value = oldValue;
+    }
+
+    if (newValue === "new_category") {
+      const categoryOption = filteredCategories.value.find(
+        (c) => c.value === "new_category"
+      );
+      openQuickAddDialog("category", categoryOption?.inputValue ?? "");
+      form.category_id = previousCategoryId.value;
+    }
+  }
+);
 
 const types = Object.entries(window.CONSTANTS.TRANSACTION_TYPES).map(
   ([value, label]) => ({
@@ -75,20 +136,6 @@ function clearImage() {
   fileInput.value.value = null;
 }
 // --- END: Penambahan untuk fitur Image ---
-
-const form = useForm({
-  id: page.props.data.id,
-  party_id: page.props.data.party_id,
-  category_id: page.props.data.category_id,
-  type: page.props.data.type,
-  datetime: dayjs(page.props.data.datetime).format("YYYY-MM-DD HH:mm:ss"),
-  notes: page.props.data.notes,
-  amount: parseFloat(page.props.data.amount),
-  // --- START: Penambahan form data untuk Image ---
-  image_path: page.props.data.image_path,
-  image: null,
-  // --- END: Penambahan form data untuk Image ---
-});
 
 const submit = () =>
   handleSubmit({
@@ -193,9 +240,17 @@ onMounted(() => {
                 :errorMessage="form.errors.category_id"
                 :error="!!form.errors.category_id"
                 :disable="form.processing"
+                clearable
                 hide-bottom-space
               >
               </q-select>
+
+              <QuickAddDialog
+                v-model="isQuickAddDialogVisible"
+                :entity-type="quickAddEntityType"
+                :initial-value="quickAddInitialValue"
+                @created="handleEntityCreated"
+              />
 
               <LocaleNumberInput
                 v-model:modelValue="form.amount"
@@ -300,11 +355,6 @@ onMounted(() => {
           </q-card>
         </q-form>
       </div>
-      <QuickAddDialog
-        v-model="isQuickAddDialogVisible"
-        :entity-type="quickAddEntityType"
-        @created="handleEntityCreated"
-      />
     </q-page>
   </authenticated-layout>
 </template>

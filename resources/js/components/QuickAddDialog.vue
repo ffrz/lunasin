@@ -1,45 +1,61 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 const props = defineProps({
   modelValue: Boolean,
   entityType: String,
+  initialValue: String,
 });
 
 const emit = defineEmits(['update:modelValue', 'created']);
 
-const title = computed(() => `Tambah ${props.entityType === 'party' ? 'Pihak' : 'Kategori'} Baru`);
+const title = computed(() =>
+  `Tambah ${props.entityType === 'party' ? 'Pihak' : 'Kategori'} Baru`
+);
 
 const form = useForm({
   name: '',
 });
 
 const submit = () => {
-  const url = props.entityType === 'party'
-    ? route('app.party.save')
-    : route('app.transaction-category.save');
+  const url =
+    props.entityType === 'party'
+      ? route('app.party.save')
+      : route('app.transaction-category.save');
 
   form.post(url, {
     preserveScroll: true,
     onSuccess: (page) => {
-      // Ambil data yang baru dibuat dari props yang dikirim Inertia
-      const newEntity = props.entityType === 'party' ? page.props.new_party : page.props.new_category;
+      // ambil entity baru dari backend
+      const newEntity =
+        props.entityType === 'party'
+          ? page.props.new_party
+          : page.props.new_category;
 
-      // Kirim data baru ke parent component
-      emit('created', newEntity);
+      emit('created', newEntity); // ⬅️ kirim ke parent
       closeDialog();
     },
     onFinish: () => {
       form.reset();
-    }
+    },
   });
 };
+
+watch(
+  () => props.modelValue,
+  (isShown) => {
+    if (isShown && props.initialValue) {
+      form.name = props.initialValue;
+    }
+  }
+);
 
 const closeDialog = () => {
   emit('update:modelValue', false);
 };
 </script>
+
 
 <template>
   <q-dialog :model-value="modelValue" @update:model-value="closeDialog">
