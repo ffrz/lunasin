@@ -26,7 +26,6 @@
  * SOFTWARE.
  */
 
-use App\Http\Controllers\App\AuthController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\App\PartyController;
 use App\Http\Controllers\App\ProfileController;
@@ -35,24 +34,15 @@ use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\App\ReportController;
 use App\Http\Middleware\Auth;
-use App\Http\Middleware\NonAuthenticated;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('homepage-new');
+    return view('homepage');
 })->name('home');
-
-Route::get('/test', function () {
-    return inertia('Test');
-})->name('test');
-
-Route::middleware(NonAuthenticated::class)->group(function () {
-    Route::redirect('/', 'app/auth/login', 301);
-});
 
 Route::middleware([Auth::class])->group(function () {
     Route::prefix('app')->group(function () {
-        Route::redirect('', 'app/dashboard', 301);
+        // Route::redirect('', 'app/dashboard', 301);
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('app.dashboard');
         Route::get('test', [DashboardController::class, 'test'])->name('app.test');
