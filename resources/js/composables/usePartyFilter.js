@@ -13,9 +13,18 @@ export function usePartyFilter(partiesRaw, includeAllOption = false) {
 
   const filterParties = (val, update) => {
     update(() => {
-      filteredParties.value = parties.filter(item =>
-        item.label.toLowerCase().includes(val.toLowerCase())
+      const needle = val.toLowerCase();
+      const filteredList = parties.filter(
+        (p) => p.label.toLowerCase().indexOf(needle) > -1
       );
+
+      filteredList.unshift({
+        label: `Tambah Pihak Baru "${val}"...`,
+        value: "new_party",
+        inputValue: val
+      });
+
+      filteredParties.value = filteredList;
     });
   };
 
