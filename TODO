@@ -3,4 +3,9 @@
       - Halaman Index: apply user role, progres, duplikat, expor dan impor
       - Redesain tabel, model & form ke target fm, target ODP, dst
 
--
+- Tugas Hari Ini:
+1. Fix text terlalu panjang di transaction history pihak = Beres
+2. Fix missing messages in translations file (php / js)
+3. Client side input validation
+4. Selesaikan custom validation message di server side untuk semua input (modul kategori, modul transaksi, modul pihak)
+5. Buat landing page
