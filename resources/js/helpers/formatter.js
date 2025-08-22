@@ -47,3 +47,7 @@ export function formatDate(val, fmt = 'DD/MM/YYYY', locale = 'id-ID') {
 export function formatTime(val, fmt = 'HH:mm:ss', locale = 'id-ID') {
   return formatDateTime(val, fmt, locale);
 }
+
+export function formatDateTimeForEditing(val, fmt = 'YYYY-MM-DD HH:mm:ss') {
+  return formatDateTime(val, fmt);
+}

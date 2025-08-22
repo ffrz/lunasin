@@ -14,24 +14,23 @@ export function useTransactionCategoryFilter(rawCategories, includeAllOption = f
 
   const filterCategories = (val, update) => {
     update(() => {
-      const needle = val.toLowerCase();
-      const filteredList = categories.filter(
-        (p) => p.label.toLowerCase().indexOf(needle) > -1
+      filteredCategories.value = categories.filter(item =>
+        item.label.toLowerCase().includes(val.toLowerCase())
       );
-
-      filteredList.unshift({
-        label: `Tambah Kategori Baru "${val}"...`,
-        value: "new_category",
-        inputValue: val
-      });
-
-      filteredCategories.value = filteredList;
     });
   };
+
+  const addCategory = (newCategory) => {
+    const newItem = { value: newCategory.id, label: newCategory.name };
+    categories.push(newItem);
+    filteredCategories.value = [...categories];
+    return newItem.value;
+  }
 
   return {
     filteredCategories,
     filterCategories,
-    categories // jika butuh juga yang belum difilter
+    categories, // jika butuh juga yang belum difilter
+    addCategory
   };
 }

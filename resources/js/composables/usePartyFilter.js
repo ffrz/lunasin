@@ -13,24 +13,23 @@ export function usePartyFilter(partiesRaw, includeAllOption = false) {
 
   const filterParties = (val, update) => {
     update(() => {
-      const needle = val.toLowerCase();
-      const filteredList = parties.filter(
-        (p) => p.label.toLowerCase().indexOf(needle) > -1
+      filteredParties.value = parties.filter(item =>
+        item.label.toLowerCase().includes(val.toLowerCase())
       );
-
-      filteredList.unshift({
-        label: `Tambah Pihak Baru "${val}"...`,
-        value: "new_party",
-        inputValue: val
-      });
-
-      filteredParties.value = filteredList;
     });
   };
+
+  const addParty = (newParty) => {
+    const newItem = { value: newParty.id, label: newParty.name };
+    parties.push(newItem);
+    filteredParties.value = [...parties];
+    return newItem.value;
+  }
 
   return {
     filteredParties,
     filterParties,
     parties,
+    addParty
   };
 }

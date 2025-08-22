@@ -91,6 +91,13 @@ class TransactionCategoryController extends Controller
 
         $messageKey = $request->id ? 'transaction-category-updated' : 'transaction-category-created';
 
+        if ($request->response == 'json') {
+            return response()->json([
+                'data' => $item,
+                'message' => 'Kategori telah disimpan',
+            ]);
+        }
+        
         return redirect()
             ->route('app.transaction-category.index')
             ->with('success', __("messages.$messageKey", ['name' => $item->name]));

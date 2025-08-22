@@ -1,104 +1,67 @@
 <script setup>
 import { router, useForm, usePage } from "@inertiajs/vue3";
-import { ref, onMounted, watch } from "vue"; // Menambahkan onMounted
+import { ref, onMounted, watch } from "vue";
 import { handleSubmit } from "@/helpers/client-req-handler";
 import { scrollToFirstErrorField } from "@/helpers/utils";
-import LocaleNumberInput from "@/components/LocaleNumberInput.vue";
-import DateTimePicker from "@/components/DateTimePicker.vue";
-import QuickAddDialog from "@/components/QuickAddDialog.vue";
-import dayjs from "dayjs";
-import { useQuasar } from "quasar"; // Menambahkan useQuasar
+import { useQuasar } from "quasar";
 import { useTransactionCategoryFilter } from "@/composables/useTransactionCategoryFilter";
 import { usePartyFilter } from "@/composables/usePartyFilter";
+import { formatDateTimeForEditing } from "@/helpers/formatter";
+
+import LocaleNumberInput from "@/components/LocaleNumberInput.vue";
+import DateTimePicker from "@/components/DateTimePicker.vue";
+import AddCategoryDialog from "@/components/AddCategoryDialog.vue";
+import AddPartyDialog from "@/components/AddPartyDialog.vue";
 
 const page = usePage();
 const title = (!!page.props.data.id ? "Edit" : "Catat") + " Transaksi";
-const isQuickAddDialogVisible = ref(false);
-const quickAddEntityType = ref(null);
+const showAddCategoryDialog = ref(false);
+const showAddPartyDialog = ref(false);
 
 const form = useForm({
   id: page.props.data.id,
   party_id: page.props.data.party_id,
   category_id: page.props.data.category_id,
   type: page.props.data.type,
-  datetime: dayjs(page.props.data.datetime).format("YYYY-MM-DD HH:mm:ss"),
+  datetime: formatDateTimeForEditing(page.props.data.datetime),
   notes: page.props.data.notes,
   amount: parseFloat(page.props.data.amount),
-  // --- START: Penambahan form data untuk Image ---
   image_path: page.props.data.image_path,
   image: null,
-  // --- END: Penambahan form data untuk Image ---
 });
 
-const handleEntityCreated = (newEntity) => {
-  if (quickAddEntityType.value === "party") {
-    filteredParties.value.unshift({
-      label: newEntity.name,
-      value: newEntity.id,
-    });
-    form.party_id = newEntity.id; // langsung pilih yg baru
-  } else if (quickAddEntityType.value === "category") {
-    filteredCategories.value.unshift({
-      label: newEntity.name,
-      value: newEntity.id,
-    });
-    form.category_id = newEntity.id;
-  }
+const { filteredCategories, filterCategories, addCategory } = useTransactionCategoryFilter([
+  { id: 'new', name: '<< Kategori Baru ... >>'},
+  ...page.props.categories
+]);
 
-  isQuickAddDialogVisible.value = false;
+const { filteredParties, filterParties, addParty } = usePartyFilter([
+  { id: 'new', name: '<< Pihak Baru ... >>'},
+  ...page.props.parties
+]);
+
+
+const handleCategoryCreated = (newCategory) => {
+  form.category_id = addCategory(newCategory);
 };
 
-// Di halaman form utama .vue
-const quickAddInitialValue = ref("");
-
-const openQuickAddDialog = (type, initialValue = "") => {
-  quickAddEntityType.value = type;
-  quickAddInitialValue.value = initialValue; // Set nilai awal
-  isQuickAddDialogVisible.value = true;
+const handlePartyCreated = (newParty) => {
+  form.party_id = addParty(newParty);
 };
 
-const { filteredCategories, filterCategories } = useTransactionCategoryFilter(
-  page.props.categories
-);
-const { filteredParties, filterParties } = usePartyFilter(page.props.parties);
-
-const previousPartyId = ref(form.party_id);
-const previousCategoryId = ref(form.category_id);
-
-watch(
-  () => form.party_id,
-  (newValue, oldValue) => {
-    if (newValue !== "new_party") {
-      previousPartyId.value = oldValue;
-    }
-
-    if (newValue === "new_party") {
-      const partyOption = filteredParties.value.find(
-        (p) => p.value === "new_party"
-      );
-      openQuickAddDialog("party", partyOption?.inputValue ?? "");
-
-      form.party_id = previousPartyId.value;
-    }
+watch(() => form.category_id, (newId, oldId) => {
+  if (newId == 'new') {
+    form.category_id = null;
+    showAddCategoryDialog.value = true;
   }
-);
+});
 
-watch(
-  () => form.category_id,
-  (newValue, oldValue) => {
-    if (newValue !== "new_category") {
-      previousCategoryId.value = oldValue;
-    }
-
-    if (newValue === "new_category") {
-      const categoryOption = filteredCategories.value.find(
-        (c) => c.value === "new_category"
-      );
-      openQuickAddDialog("category", categoryOption?.inputValue ?? "");
-      form.category_id = previousCategoryId.value;
-    }
+watch(() => form.party_id, (newId, oldId) => {
+  if (newId == 'new') {
+    form.party_id = null;
+    showAddPartyDialog.value = true;
   }
-);
+});
 
 const types = Object.entries(window.CONSTANTS.TRANSACTION_TYPES).map(
   ([value, label]) => ({
@@ -107,11 +70,9 @@ const types = Object.entries(window.CONSTANTS.TRANSACTION_TYPES).map(
   })
 );
 
-// --- START: Penambahan untuk fitur Image ---
 const fileInput = ref(null);
 const imagePreview = ref("");
-const $q = useQuasar(); // Inisialisasi useQuasar
-
+const $q = useQuasar();
 function triggerInput() {
   fileInput.value.click();
 }
@@ -120,40 +81,30 @@ function onFileChange(event) {
   const file = event.target.files[0];
   if (file) {
     form.image = file;
-    // Tampilkan pratinjau gambar baru
     imagePreview.value = URL.createObjectURL(file);
-    // Hapus path gambar lama (jika ada)
     form.image_path = null;
   }
 }
 
 function clearImage() {
-  // Hapus data form dan pratinjau gambar
   form.image = null;
   form.image_path = null;
   imagePreview.value = null;
-  // Reset input file agar bisa memilih file yang sama lagi
   fileInput.value.value = null;
 }
-// --- END: Penambahan untuk fitur Image ---
 
 const submit = () =>
   handleSubmit({
     form,
-    // Penting: tambahkan forceFormData: true untuk mengirim file
-    // Pastikan server (Laravel) juga dikonfigurasi untuk menerima file
     forceFormData: true,
     url: route("app.transaction.save"),
   });
 
-// --- START: Penambahan logic saat component dimuat ---
 onMounted(() => {
-  // Jika ada path gambar yang sudah tersimpan, tampilkan pratinjau
   if (form.image_path) {
     imagePreview.value = `/${form.image_path}`;
   }
 });
-// --- END: Penambahan logic saat component dimuat ---
 </script>
 
 <template>
@@ -244,13 +195,6 @@ onMounted(() => {
                 hide-bottom-space
               >
               </q-select>
-
-              <QuickAddDialog
-                v-model="isQuickAddDialogVisible"
-                :entity-type="quickAddEntityType"
-                :initial-value="quickAddInitialValue"
-                @created="handleEntityCreated"
-              />
 
               <LocaleNumberInput
                 v-model:modelValue="form.amount"
@@ -356,5 +300,16 @@ onMounted(() => {
         </q-form>
       </div>
     </q-page>
+
+    <AddCategoryDialog
+      v-model="showAddCategoryDialog"
+      @created="handleCategoryCreated"
+    />
+
+    <AddPartyDialog
+      v-model="showAddPartyDialog"
+      @created="handlePartyCreated"
+    />
+
   </authenticated-layout>
 </template>

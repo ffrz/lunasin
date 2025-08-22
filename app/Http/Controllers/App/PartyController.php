@@ -105,6 +105,13 @@ class PartyController extends Controller
         $item->fill($validated);
         $item->save();
 
+        if ($request->response == 'json') {
+            return response()->json([
+                'data' => $item,
+                'message' => 'Pihak telah disimpan.',
+            ]);
+        }
+
         return redirect(route('app.party.detail', ['id' => $item->id]))->with('success', "Pelanggan $item->name telah disimpan.");
     }
 
