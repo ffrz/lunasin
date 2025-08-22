@@ -2,10 +2,10 @@
 
 /**
  * MIT License
- * 
+ *
  * Copyright (c) 2025 Fahmi Fauzi Rahman
  * See LICENSE file in the project root for full license information.
- * 
+ *
  * GitHub: https://github.com/ffrz
  * Email: fahmifauzirahman@gmail.com
  */
@@ -115,17 +115,35 @@ class TransactionController extends Controller
 
     public function save(Request $request)
     {
-        $validated = $request->validate([
-            'id'          => 'nullable|exists:transactions,id',
-            'party_id'    => 'required|exists:parties,id',
-            'category_id' => 'required|exists:transaction_categories,id',
-            'datetime'    => 'required|date',
-            'type'        => 'required|in:' . implode(',', array_keys(Transaction::Types)),
-            'amount'      => 'required|numeric|min:0.01',
-            'notes'       => 'nullable|string|max:255',
-            'image'       => 'nullable|image|max:5120',
-            'image_path'  => 'nullable|string',
-        ]);
+        $validated = $request->validate(
+            [
+                'id'          => 'nullable|exists:transactions,id',
+                'party_id'    => 'required|exists:parties,id',
+                'category_id' => 'required|exists:transaction_categories,id',
+                'datetime'    => 'required|date',
+                'type'        => 'required|in:' . implode(',', array_keys(Transaction::Types)),
+                'amount'      => 'required|numeric|min:0.01',
+                'notes'       => 'nullable|string|max:255',
+                'image'       => 'nullable|image|max:5120',
+                'image_path'  => 'nullable|string',
+            ],
+            [
+                'party_id.required'    => 'Pilih pihak wajib diisi.',
+                'party_id.exists'      => 'Pihak yang dipilih tidak valid.',
+                'category_id.required' => 'Kategori transaksi wajib diisi.',
+                'category_id.exists'   => 'Kategori transaksi tidak valid.',
+                'datetime.required'    => 'Tanggal transaksi wajib diisi.',
+                'datetime.date'        => 'Tanggal transaksi harus format tanggal yang valid.',
+                'type.required'        => 'Jenis transaksi wajib dipilih.',
+                'type.in'              => 'Jenis transaksi tidak sesuai.',
+                'amount.required'      => 'Jumlah transaksi wajib diisi.',
+                'amount.numeric'       => 'Jumlah transaksi harus berupa angka.',
+                'amount.min'           => 'Jumlah transaksi minimal Rp 0,01.',
+                'notes.max'            => 'Catatan maksimal 255 karakter.',
+                'image.image'          => 'File yang diunggah harus berupa gambar.',
+                'image.max'            => 'Ukuran gambar maksimal 5 MB.',
+            ]
+        );
 
         $validated['notes'] = $validated['notes'] ?? '';
         $normalizedAmount = abs($validated['amount']);
