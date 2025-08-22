@@ -49,19 +49,24 @@ const handlePartyCreated = (newParty) => {
   form.party_id = addParty(newParty);
 };
 
-watch(() => form.category_id, (newId, oldId) => {
-  if (newId == 'new') {
+const onCategorySelected = (value) => {
+  console.log('changed', value, showAddCategoryDialog.value);
+  if (value === 'new') {
     form.category_id = null;
     showAddCategoryDialog.value = true;
+  } else {
+    form.category_id = value;
   }
-});
+};
 
-watch(() => form.party_id, (newId, oldId) => {
-  if (newId == 'new') {
+const onPartySelected = (value) => {
+  if (value === 'new') {
     form.party_id = null;
     showAddPartyDialog.value = true;
+  } else {
+    form.party_id = value;
   }
-});
+};
 
 const types = Object.entries(window.CONSTANTS.TRANSACTION_TYPES).map(
   ([value, label]) => ({
@@ -166,6 +171,7 @@ onMounted(() => {
                 "
                 :options="filteredParties"
                 @filter="filterParties"
+                @update:model-value="onPartySelected"
                 use-input
                 input-debounce="300"
                 map-options
@@ -184,6 +190,7 @@ onMounted(() => {
                 label="Kategori"
                 :options="filteredCategories"
                 @filter="filterCategories"
+                @update:model-value="onCategorySelected"
                 use-input
                 input-debounce="300"
                 map-options

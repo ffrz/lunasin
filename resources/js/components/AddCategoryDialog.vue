@@ -32,14 +32,13 @@ const submit = () => {
 };
 
 const closeDialog = () => {
+  form.reset();
   emit('update:modelValue', false);
 };
 
 </script>
-
-
 <template>
-  <q-dialog :model-value="modelValue">
+  <q-dialog :model-value="modelValue" @hide="closeDialog">
     <q-card style="min-width: 350px">
       <q-card-section>
         <div class="text-h6">{{ title }}</div>
@@ -59,7 +58,7 @@ const closeDialog = () => {
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Batal" v-close-popup />
+          <q-btn flat label="Batal" @click="closeDialog" />
           <q-btn flat label="Simpan" color="primary" type="submit" :loading="form.processing" />
         </q-card-actions>
       </q-form>
