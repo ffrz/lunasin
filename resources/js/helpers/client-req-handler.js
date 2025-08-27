@@ -1,6 +1,7 @@
 import { usePage } from "@inertiajs/vue3";
 import axios from "axios";
 import { Notify, Dialog } from "quasar";
+import { nextTick } from "vue";
 
 const _scrollToFirstError = () => {
   const page = usePage();
