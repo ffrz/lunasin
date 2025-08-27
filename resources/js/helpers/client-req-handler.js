@@ -97,7 +97,7 @@ export function handleDelete(data) {
 }
 
 export function handleFetchItems(options) {
-  const { pagination, props, rows, url, loading, filter } = options;
+  const { pagination, props, rows, url, loading, filter, tableRef } = options;
 
   let source = props ? props.pagination : pagination.value;
 
@@ -125,5 +125,11 @@ export function handleFetchItems(options) {
     })
     .finally(() => {
       loading.value = false;
+      nextTick(() => {
+        if (!tableRef || !tableRef.value) return;
+        const scrollableElement = tableRef.value.$el.querySelector('.q-table__middle');
+        if (!scrollableElement) return;
+        scrollableElement.scrollTop = 0;
+      });
     });
 }
