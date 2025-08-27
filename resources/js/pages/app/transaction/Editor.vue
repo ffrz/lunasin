@@ -155,6 +155,9 @@ onMounted(() => {
                 :error="!!form.errors.type"
                 :disable="form.processing"
                 :errorMessage="form.errors.type"
+                :rules="[
+                  (val) => (val && val.length > 0) || 'Jenis harus diisi.',
+                ]"
                 hide-bottom-space
               >
               </q-select>
@@ -179,6 +182,7 @@ onMounted(() => {
                 :errorMessage="form.errors.party_id"
                 :error="!!form.errors.party_id"
                 :disable="form.processing"
+
                 clearable
                 hide-bottom-space
               >
@@ -212,7 +216,10 @@ onMounted(() => {
                 :disable="form.processing"
                 :error="!!form.errors.amount"
                 :errorMessage="form.errors.amount"
-                :rules="[]"
+                :rules="[
+                  (vak) => (vak !== null && vak !== undefined && vak !== '' && !isNaN(vak)) || 'Jumlah harus diisi.',
+                  (val) => (val > 0) || 'Jumlah harus lebih dari 0.',
+                ]"
                 :allowNegative="form.type == 'adjustment'"
                 hide-bottom-space
               />
