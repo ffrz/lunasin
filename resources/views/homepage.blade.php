@@ -2,30 +2,24 @@
 <html lang="id">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunasin - Aplikasi Debt Tracking Terpercaya</title>
-    <meta name="description"
-        content="Lunasin adalah aplikasi debt tracking yang simpel dan gratis. Catat, kelola, dan pantau utang piutang pribadi atau bisnis dengan mudah.">
-    <meta name="keywords"
-        content="aplikasi utang piutang, catat utang, kelola utang, debt tracking, aplikasi keuangan, pencatatan utang, pengingat utang, aplikasi bisnis, keuangan pribadi">
 
-    <!-- Favicon -->
-    <link href="assets/img/favicon.png" rel="icon">
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Vendor CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/bootstrap-icons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ env('APP_NAME') }}</title>
+  <meta name="description" content="{{ env('APP_NAME') }} aplikasi utang-piutang simpel dan gratis. Catat, kelola, dan pantau transaksi pribadi atau bisnis dengan mudah.">
+  <meta name="keywords" content="aplikasi utang piutang, catat utang piutang, utang piutang pribadi, utang piutang bisnis, aplikasi gratis utang piutang, aplikasi sederhana untuk utang piutang, kelola utang piutang mudah, pencatatan utang piutang online, aplikasi keuangan pribadi gratis, aplikasi pencatatan keuangan kecil">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
+  @vite([])
 </head>
 
 <body>

@@ -104,13 +104,6 @@ const pieChartOptions = computed(() => ({
       );
     },
   },
-  legend: {
-    orient: "vertical",
-    left: "left",
-    textStyle: {
-      color: "#616161",
-    },
-  },
   series: [
     {
       name: "Jumlah Transaksi",
