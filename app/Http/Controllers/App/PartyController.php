@@ -12,11 +12,13 @@
 
 namespace App\Http\Controllers\App;
 
+use App\Helpers\JsonResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Party;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Nette\NotImplementedException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -93,12 +95,12 @@ class PartyController extends Controller
     public function save(Request $request)
     {
         $validated =  $request->validate([
-            'name'           => 'required|string|max:255',
-            'phone'          => 'nullable|string|max:50',
-            'type'           => 'nullable|string|max:255',
-            'address'        => 'nullable|string|max:500',
-            'active'         => 'required|boolean',
-            'notes'          => 'nullable|string',
+            'name'    => 'required|string|max:255',
+            'phone'   => 'nullable|string|max:50',
+            'type'    => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
+            'active'  => 'required|boolean',
+            'notes'   => 'nullable|string',
         ]);
 
         $item = !$request->id ? new Party() : Party::findOrFail($request->post('id', 0));
@@ -118,11 +120,20 @@ class PartyController extends Controller
     public function delete($id)
     {
         $item = Party::findOrFail($id);
-        $item->delete();
+        try {
+            if (Party::isUsedInTransaction($id)) {
+                return JsonResponseHelper::error($item->name . ' tidak dapat dihapus karena sudah dipakai di transaksi.', 402);
+            }
 
-        return response()->json([
-            'message' => "Pihak $item->name telah dihapus."
-        ]);
+            $item->delete();
+
+            return JsonResponseHelper::success(
+                $item,
+                "Pihak $item->name telah dihapus."
+            );
+        } catch (Exception $e) {
+            return JsonResponseHelper::error('Rekaman tidak dapat dihapus.', 402, $e);
+        }
     }
 
     /**

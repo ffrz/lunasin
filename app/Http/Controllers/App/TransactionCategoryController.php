@@ -12,12 +12,14 @@
 
 namespace App\Http\Controllers\App;
 
+use App\Helpers\JsonResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\TransactionCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -92,12 +94,9 @@ class TransactionCategoryController extends Controller
         $messageKey = $request->id ? 'transaction-category-updated' : 'transaction-category-created';
 
         if ($request->response == 'json') {
-            return response()->json([
-                'data' => $item,
-                'message' => 'Kategori telah disimpan',
-            ]);
+            return JsonResponseHelper::success($item, 'Kategori telah disimpan');
         }
-        
+
         return redirect()
             ->route('app.transaction-category.index')
             ->with('success', __("messages.$messageKey", ['name' => $item->name]));
@@ -106,11 +105,15 @@ class TransactionCategoryController extends Controller
     public function delete($id)
     {
         $item = TransactionCategory::findOrFail($id);
-        $item->delete();
-
-        return response()->json([
-            'message' => __('messages.transaction-category-deleted', ['name' => $item->name])
-        ]);
+        try {
+            $item->delete();
+            return JsonResponseHelper::success(
+                $item,
+                "Kategori transaksi $item->name telah dihapus."
+            );
+        } catch (Exception $e) {
+            return JsonResponseHelper::error('Rekaman tidak dapat dihapus.', 402);
+        }
     }
 
     /**

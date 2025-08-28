@@ -61,4 +61,9 @@ class Party extends BaseModel
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public static function isUsedInTransaction($id)
+    {
+        return Transaction::where('party_id', $id)->exists();
+    }
 }
