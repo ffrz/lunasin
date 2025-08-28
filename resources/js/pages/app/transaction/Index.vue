@@ -10,10 +10,14 @@ import { usePageStorage } from "@/composables/usePageStorage";
 import { usePartyFilter } from "@/composables/usePartyFilter";
 import { useTransactionCategoryFilter } from "@/composables/useTransactionCategoryFilter";
 import LongTextView from "@/components/LongTextView.vue";
+import useTableHeight from "@/composables/useTableHeight";
 
 const storage = usePageStorage("transaction");
 const title = "Transaksi";
 const page = usePage();
+const tableRef = ref(null);
+const filterToolbarRef = ref(null);
+const tableHeight = useTableHeight(filterToolbarRef);
 const $q = useQuasar();
 const showFilter = ref(storage.get("show-filter", false));
 const rows = ref([]);
@@ -138,6 +142,7 @@ const fetchItems = (props = null) => {
     rows,
     url: route("app.transaction.data"),
     loading,
+    tableRef,
   });
 };
 
@@ -236,7 +241,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
       </q-btn>
     </template>
     <template #header v-if="showFilter">
-      <q-toolbar class="filter-bar">
+      <q-toolbar class="filter-bar" ref="filterToolbarRef">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
           <q-select
             v-model="filter.year"
@@ -323,6 +328,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
     </template>
     <div class="q-pa-sm">
       <q-table
+        ref="tableRef"
         flat
         bordered
         square
@@ -335,6 +341,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
         :columns="computedColumns"
         :rows="rows"
         :rows-per-page-options="[10, 25, 50]"
+        :style="{ height: tableHeight }"
         @request="fetchItems"
         binary-state-sort
         class="full-height-table"
