@@ -5,6 +5,7 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import { formatDateTime, formatNumberWithSymbol } from "@/helpers/formatter";
+import LongTextView from "@/components/LongTextView.vue";
 
 const $q = useQuasar();
 const rows = ref([]);
@@ -150,9 +151,12 @@ const computedColumns = computed(() =>
                   {{ formatNumberWithSymbol(props.row.amount) }}
                 </span>
               </div>
-              <div v-if="props.row.notes">
-                <q-icon name="notes" /> {{ props.row.notes }}
-              </div>
+              <long-text-view
+                v-if="props.row.notes"
+                :text="props.row.notes"
+                :max-length="50"
+                icon="notes"
+              />
             </template>
           </q-td>
           <q-td key="type" :props="props">
@@ -170,7 +174,7 @@ const computedColumns = computed(() =>
             {{ formatNumberWithSymbol(props.row.amount) }}
           </q-td>
           <q-td key="notes" :props="props">
-            {{ props.row.notes }}
+            <long-text-view :text="props.row.notes" :max-length="10" />
           </q-td>
           <q-td key="action" :props="props">
             <div class="flex justify-end">

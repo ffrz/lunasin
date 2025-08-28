@@ -5,6 +5,7 @@ import {
   formatNumberWithSymbol,
 } from "@/helpers/formatter";
 import { usePage } from "@inertiajs/vue3";
+import LongTextView from "@/components/LongTextView.vue";
 
 const page = usePage();
 </script>
@@ -42,6 +43,7 @@ const page = usePage();
         <td>{{ page.props.data.address }}</td>
       </tr>
       <tr>
+
         <td>Status</td>
         <td>:</td>
         <td>{{ page.props.data.active ? "Aktif" : "Tidak Aktif" }}</td>

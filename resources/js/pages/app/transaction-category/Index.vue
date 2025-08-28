@@ -5,10 +5,14 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 import { usePageStorage } from "@/composables/usePageStorage";
+import useTableHeight from "@/composables/useTableHeight";
 
 const storage = usePageStorage("transaction-category");
 const title = "Kategori";
 const $q = useQuasar();
+const tableRef = ref(null);
+const filterToolbarRef = ref(null);
+const tableHeight = useTableHeight(filterToolbarRef);
 const showFilter = ref(storage.get("show-filter", false));
 const rows = ref([]);
 const loading = ref(true);
@@ -69,6 +73,7 @@ const fetchItems = (props = null) => {
     rows,
     url: route("app.transaction-category.data"),
     loading,
+    tableRef,
   });
 };
 
@@ -151,7 +156,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
       </q-btn>
     </template>
     <template #header v-if="showFilter">
-      <q-toolbar class="filter-bar">
+      <q-toolbar class="filter-bar" ref="filterToolbarRef">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
           <q-input
             class="col"
@@ -171,6 +176,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
     </template>
     <div class="q-pa-sm">
       <q-table
+        ref="tableRef"
         flat
         bordered
         square
@@ -183,6 +189,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
         :columns="computedColumns"
         :rows="rows"
         :rows-per-page-options="[10, 25, 50]"
+        :style="{ height: tableHeight }"
         @request="fetchItems"
         binary-state-sort
         class="full-height-table"

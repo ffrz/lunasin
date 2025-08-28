@@ -8,9 +8,13 @@ import { createOptions } from "@/helpers/options";
 import { formatNumberWithSymbol } from "@/helpers/formatter";
 import LongTextView from "@/components/LongTextView.vue";
 import { useQuasar } from "quasar";
+import useTableHeight from "@/composables/useTableHeight";
 
 const $q = useQuasar();
 const storage = usePageStorage("party");
+const tableRef = ref(null);
+const filterToolbarRef = ref(null);
+const tableHeight = useTableHeight(filterToolbarRef);
 const title = "Pihak-pihak";
 const showFilter = ref(storage.get("show-filter", false));
 const rows = ref([]);
@@ -85,6 +89,7 @@ const deleteItem = (row) =>
     url: route("app.party.delete", row.id),
     fetchItemsCallback: fetchItems,
     loading,
+    tableRef,
   });
 
 const fetchItems = (props = null) => {
@@ -177,7 +182,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
       </q-btn>
     </template>
     <template #header v-if="showFilter">
-      <q-toolbar class="filter-bar">
+      <q-toolbar class="filter-bar" ref="filterToolbarRef">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
           <q-select
             class="custom-select col-xs-12 col-md-4 col-sm-6"
@@ -221,6 +226,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
     </template>
     <div class="q-pa-sm">
       <q-table
+        ref="tableRef"
         flat
         bordered
         square
@@ -233,6 +239,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
         :columns="computedColumns"
         :rows="rows"
         :rows-per-page-options="[10, 25, 50]"
+        :style="{ height: tableHeight }"
         @request="fetchItems"
         binary-state-sort
         class="full-height-table"
